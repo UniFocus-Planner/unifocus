@@ -9,6 +9,7 @@ import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.data.repository.UniFocusRepository
 import com.example.unifocus.domain.TaskFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel() {
@@ -17,13 +18,13 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
 
     fun addTask(name: String, description: String?, deadline: Long?, taskType: TaskType, additionalInformation: String?) {
         val task = TaskFactory.createTask(name, description, deadline, taskType, additionalInformation)
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.addTask(task)
         }
     }
 
     fun addSchedule(schedule: Schedule, tasks: List<Task>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.addSchedule(schedule, tasks)
         }
     }

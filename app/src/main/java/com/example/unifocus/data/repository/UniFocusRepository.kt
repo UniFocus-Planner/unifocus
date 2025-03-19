@@ -13,21 +13,20 @@ class UniFocusRepository(
 
     val classTasks: Flow<List<Task>> = taskDao.getTasksByType("CLASS")
 
-    suspend fun addTask(task: Task) {
+    fun addTask(task: Task) {
         taskDao.insertTask(task)
     }
 
-    suspend fun addSchedule(schedule: Schedule, tasks: List<Task>) {
-        schedule.tasks.addAll(tasks)
+    fun addSchedule(schedule: Schedule, tasks: List<Task>) {
         scheduleDao.insertSchedule(schedule)
         taskDao.insertTasks(tasks)
     }
 
-    suspend fun getSchedule(groupName: String): Schedule? {
+    fun getSchedule(groupName: String): Schedule? {
         return scheduleDao.getSchedule(groupName)
     }
 
-    suspend fun deleteSchedule(groupName: String) {
+    fun deleteSchedule(groupName: String) {
         scheduleDao.deleteScheduleByGroup(groupName)
     }
 }

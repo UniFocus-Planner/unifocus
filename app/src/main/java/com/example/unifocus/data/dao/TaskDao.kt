@@ -10,14 +10,14 @@ interface TaskDao {
     fun getTasksByType(type: String): Flow<List<Task>>
 
     @Query("SELECT * FROM tasks WHERE id IN (:taskIds)")
-    suspend fun getTasksByIds(taskIds: List<Int>): List<Task>
+    fun getTasksByIds(taskIds: List<Int>): List<Task>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTask(task: Task): Long
+    fun insertTask(task: Task): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTasks(tasks: List<Task>): List<Long>
+    fun insertTasks(tasks: List<Task>): List<Long>
 
     @Delete
-    suspend fun deleteTask(task: Task)
+    fun deleteTask(task: Task)
 }
