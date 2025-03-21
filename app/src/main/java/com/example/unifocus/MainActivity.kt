@@ -1,6 +1,7 @@
 package com.example.unifocus
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,15 +40,36 @@ class MainActivity : ComponentActivity() {
         recyclerView.adapter = adapter
 
         viewModel.classTasks.observe(this) { tasks ->
+            println("Задач обновлено: ${tasks?.size}")
             adapter.submitList(tasks)
+        }
+
+        findViewById<Button>(R.id.addButton).also {
+            it.setOnClickListener {
+                addTestTask()
+            }
+        }
+
+        findViewById<Button>(R.id.deleteButton).also {
+            it.setOnClickListener {
+                viewModel.deleteAllTasks()
+            }
         }
 
         addTestData()
     }
 
+    private fun addTestTask() {
+        println("Creating hello task")
+        println(viewModel.classTasks.value)
+        viewModel.createTask(
+            name = "HELLO",
+            taskType = TaskType.CLASS)
+    }
+
     private fun addTestData() {
         CoroutineScope(Dispatchers.IO).launch {
-            val schedule = ScheduleFactory.createSchedule("БРП-21-3")
+            val schedule = ScheduleFactory.createSchedule("БПИ-22-РП-3")
 
             val tasks = listOf(
                 TaskFactory.createTask(

@@ -10,16 +10,57 @@ import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.data.repository.UniFocusRepository
 import com.example.unifocus.domain.TaskFactory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel() {
 
     val classTasks: LiveData<List<Task>> = repository.classTasks.asLiveData()
 
-    fun addTask(name: String, description: String?, deadline: Long?, taskType: TaskType, additionalInformation: String?) {
-        val task = TaskFactory.createTask(name, description, deadline, taskType, additionalInformation)
+    fun createTask(
+        name: String,
+        description: String? = null,
+        deadline: Long? = null,
+        taskType: TaskType = TaskType.USER,
+        additionalInformation: String? = null
+    ) {
+        addTask(TaskFactory.createTask(name, description, deadline, taskType, additionalInformation))
+    }
+
+    fun addTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.addTask(task)
+        }
+    }
+
+    fun addTasks(tasks: List<Task>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addTasks(tasks)
+        }
+    }
+
+    fun deleteTaskByName(name: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteTaskByName(name)
+        }
+    }
+
+    fun deleteTaskById(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteTaskById(id)
+        }
+    }
+
+    fun deleteAllTasks() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllTasks()
+        }
+    }
+
+    suspend fun getAllTasks(): List<Task> {
+        return withContext(Dispatchers.IO) {
+            repository.getAllTasks()
         }
     }
 

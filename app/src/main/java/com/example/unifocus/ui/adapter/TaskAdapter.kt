@@ -12,28 +12,27 @@ import com.example.unifocus.data.models.task.Task
 
 class TaskAdapter : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
+    class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val nameView: TextView = itemView.findViewById(R.id.taskName)
+        private val descView: TextView = itemView.findViewById(R.id.taskDesc)
+
+        fun bind(task: Task) {
+            nameView.text = task.name
+            descView.text = task.description ?: "—"
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
         return TaskViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        val task = getItem(position)
-        holder.bind(task)
+        holder.bind(getItem(position))
     }
 
-    class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val taskName: TextView = itemView.findViewById(R.id.taskName)
-        private val taskDescription: TextView = itemView.findViewById(R.id.taskDescription)
-
-        fun bind(task: Task) {
-            taskName.text = task.name
-            taskDescription.text = task.description ?: "Нет описания"
-        }
+    class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
+        override fun areItemsTheSame(oldItem: Task, newItem: Task) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Task, newItem: Task) = oldItem == newItem
     }
-}
-
-class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
-    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean = oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean = oldItem == newItem
 }

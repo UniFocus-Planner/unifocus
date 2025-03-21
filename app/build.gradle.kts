@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.constraintlayout)
 
     testImplementation(libs.junit)
 
@@ -75,7 +76,7 @@ dependencies {
     // If this project only uses Java source, use the Java annotationProcessor
     // No additional plugins are necessary
 
-    val roomVersion = "2.5.0"
+    val roomVersion = "2.6.1"
 
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")

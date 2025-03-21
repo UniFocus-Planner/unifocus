@@ -5,28 +5,38 @@ import com.example.unifocus.data.models.schedule.Schedule
 import com.example.unifocus.data.models.task.Task
 import kotlinx.coroutines.flow.Flow
 
-class UniFocusRepository(
-    private val database: UniFocusDatabase
-) {
+class UniFocusRepository(private val database: UniFocusDatabase) {
     private val taskDao = database.taskDao()
     private val scheduleDao = database.scheduleDao()
 
     val classTasks: Flow<List<Task>> = taskDao.getTasksByType("CLASS")
 
-    fun addTask(task: Task) {
-        taskDao.insertTask(task)
+    suspend fun addTask(task: Task) = taskDao.insertTask(task)
+
+    suspend fun addTasks(tasks: List<Task>) = taskDao.insertTasks(tasks)
+
+    suspend fun deleteTaskByName(name: String) {
+        taskDao.getTasksByName(name)?.let { taskDao.deleteTask(it) }
     }
 
-    fun addSchedule(schedule: Schedule, tasks: List<Task>) {
+    suspend fun deleteTaskById(id: Int) {
+        taskDao.getTasksById(id)?.let { taskDao.deleteTask(it) }
+    }
+
+    suspend fun deleteAllTasks() = taskDao.deleteAll()
+
+    suspend fun getAllTasks(): List<Task> = taskDao.getAllTasks()
+
+    suspend fun addSchedule(schedule: Schedule, tasks: List<Task>) {
         scheduleDao.insertSchedule(schedule)
         taskDao.insertTasks(tasks)
     }
 
-    fun getSchedule(groupName: String): Schedule? {
-        return scheduleDao.getSchedule(groupName)
+    suspend fun deleteSchedule(groupName: String) {
+        scheduleDao.deleteScheduleByGroup(groupName)
     }
 
-    fun deleteSchedule(groupName: String) {
-        scheduleDao.deleteScheduleByGroup(groupName)
+    suspend fun getSchedule(groupName: String): Schedule? {
+        return scheduleDao.getSchedule(groupName)
     }
 }

@@ -6,18 +6,28 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
-    @Query("SELECT * FROM tasks WHERE taskType = :type ORDER BY deadline ASC")
-    fun getTasksByType(type: String): Flow<List<Task>>
-
-    @Query("SELECT * FROM tasks WHERE id IN (:taskIds)")
-    fun getTasksByIds(taskIds: List<Int>): List<Task>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTask(task: Task): Long
+    suspend fun insertTask(task: Task)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTasks(tasks: List<Task>): List<Long>
+    suspend fun insertTasks(tasks: List<Task>)
 
     @Delete
-    fun deleteTask(task: Task)
+    suspend fun deleteTask(task: Task)
+
+    @Query("SELECT * FROM tasks")
+    suspend fun getAllTasks(): List<Task>
+
+    @Query("SELECT * FROM tasks WHERE name = :name LIMIT 1")
+    suspend fun getTasksByName(name: String): Task?
+
+    @Query("SELECT * FROM tasks WHERE id = :id LIMIT 1")
+    suspend fun getTasksById(id: Int): Task?
+
+    @Query("DELETE FROM tasks")
+    suspend fun deleteAll()
+
+    @Query("SELECT * FROM tasks WHERE taskType = :type")
+    fun getTasksByType(type: String): Flow<List<Task>>
 }

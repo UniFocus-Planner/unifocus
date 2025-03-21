@@ -15,9 +15,22 @@
         android:textStyle="bold"
         android:paddingBottom="10dp"/>
 
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add test task" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete all tasks" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="LinearLayoutManager"/>
+        android:layout_height="581dp"
+        app:layoutManager="LinearLayoutManager" />
+
 </LinearLayout>
