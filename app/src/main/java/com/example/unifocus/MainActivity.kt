@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
 
         findViewById<Button>(R.id.addButton).also {
             it.setOnClickListener {
-                addTestTask()
+                viewModel.createTask("BYE", taskType = TaskType.CLASS)
             }
         }
 
