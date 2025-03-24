@@ -27,6 +27,12 @@
         android:layout_height="wrap_content"
         android:text="Delete all tasks" />
 
+    <Button
+        android:id="@+id/notificationButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send test notification" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
