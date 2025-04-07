@@ -20,31 +20,31 @@
         android:background="#f0f0f0"
         android:elevation="8dp">
 
-        <Button
-            android:id="@+id/btn_screen1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Экран 1"
-            android:padding="16dp"
-            android:background="?android:attr/selectableItemBackground" />
+         <Button
+             android:id="@+id/btn_screen1"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:layout_weight="1"
+             android:background="?android:attr/selectableItemBackground"
+             android:padding="16dp"
+             android:text="Календарь" />
 
-        <Button
-            android:id="@+id/btn_screen2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Экран 2"
-            android:padding="16dp"
-            android:background="?android:attr/selectableItemBackground" />
+         <Button
+             android:id="@+id/btn_screen2"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:layout_weight="1"
+             android:background="?android:attr/selectableItemBackground"
+             android:padding="16dp"
+             android:text="Сегодня" />
 
-        <Button
-            android:id="@+id/btn_screen3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Экран 3"
-            android:padding="16dp"
-            android:background="?android:attr/selectableItemBackground" />
+         <Button
+             android:id="@+id/btn_screen3"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:layout_weight="1"
+             android:background="?android:attr/selectableItemBackground"
+             android:padding="16dp"
+             android:text="Профиль" />
     </LinearLayout>
 </RelativeLayout>
