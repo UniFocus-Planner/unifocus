@@ -1,12 +1,10 @@
 package com.example.unifocus
 
 import android.app.Fragment
-import android.app.FragmentContainer
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.example.unifocus.data.database.UniFocusDatabase

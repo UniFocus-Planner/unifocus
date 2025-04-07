@@ -5,15 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.activity.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
-import com.example.unifocus.data.database.UniFocusDatabase
-import com.example.unifocus.data.repository.UniFocusRepository
 import com.example.unifocus.ui.adapter.TaskAdapter
-import com.example.unifocus.ui.viewmodels.UniFocusViewModel
-import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
 
 class TodayTasksScreen : Fragment() {
     private lateinit var recyclerView: RecyclerView
