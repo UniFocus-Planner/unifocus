@@ -1,10 +1,12 @@
 package com.example.unifocus
 
+import android.app.Fragment
+import android.app.FragmentContainer
 import android.os.Bundle
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.example.unifocus.data.database.UniFocusDatabase
@@ -13,6 +15,9 @@ import com.example.unifocus.data.repository.UniFocusRepository
 import com.example.unifocus.domain.ScheduleFactory
 import com.example.unifocus.domain.TaskFactory
 import com.example.unifocus.ui.adapter.TaskAdapter
+import com.example.unifocus.ui.view.ProfileScreen
+import com.example.unifocus.ui.view.ScheduleScreen
+import com.example.unifocus.ui.view.TodayTasksScreen
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
 
@@ -24,6 +29,10 @@ class MainActivity : ComponentActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TaskAdapter
 
+    private lateinit var todayButton: Button
+    private lateinit var scheduleButton: Button
+    private lateinit var profileButton: Button
+
     private val viewModel: UniFocusViewModel by viewModels {
         UniFocusViewModelFactory(UniFocusRepository(UniFocusDatabase.getDatabase(this)))
     }
@@ -32,31 +41,68 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_layout)
 
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.setHasFixedSize(true)
+        //recyclerView = findViewById(R.id.recyclerView)
+        //recyclerView.layoutManager = LinearLayoutManager(this)
+        //recyclerView.setHasFixedSize(true)
+        //
+        //adapter = TaskAdapter()
+        //recyclerView.adapter = adapter
+        //
+        //viewModel.classTasks.observe(this) { tasks ->
+        //    println("Задач обновлено: ${tasks?.size}")
+        //    adapter.submitList(tasks)
+        //}
+        //
+        //findViewById<Button>(R.id.addButton).also {
+        //    it.setOnClickListener {
+        //        viewModel.createTask("BYE", taskType = TaskType.CLASS)
+        //    }
+        //}
+        //
+        //findViewById<Button>(R.id.deleteButton).also {
+        //    it.setOnClickListener {
+        //        viewModel.deleteAllTasks()
+        //    }
+        //}
 
-        adapter = TaskAdapter()
-        recyclerView.adapter = adapter
+        //addTestData()
 
-        viewModel.classTasks.observe(this) { tasks ->
-            println("Задач обновлено: ${tasks?.size}")
-            adapter.submitList(tasks)
-        }
+        replaceFragment(ScheduleScreen())
 
-        findViewById<Button>(R.id.addButton).also {
-            it.setOnClickListener {
-                viewModel.createTask("BYE", taskType = TaskType.CLASS)
+        scheduleButton = findViewById<Button>(R.id.schedule_screen).also { button ->
+            button.setOnClickListener {
+                replaceFragment(ScheduleScreen())
+                updateButtonSelection(button)
             }
         }
 
-        findViewById<Button>(R.id.deleteButton).also {
-            it.setOnClickListener {
-                viewModel.deleteAllTasks()
+        todayButton = findViewById<Button>(R.id.today_button).also { button ->
+            button.setOnClickListener {
+                replaceFragment(TodayTasksScreen())
+                updateButtonSelection(button)
             }
         }
 
-        addTestData()
+        profileButton = findViewById<Button>(R.id.profile_button).also { button ->
+            button.setOnClickListener {
+                replaceFragment(ProfileScreen())
+                updateButtonSelection(button)
+            }
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        fragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+    }
+
+    private fun updateButtonSelection(selectedButton: android.widget.Button) {
+        profileButton.isSelected = false
+        todayButton.isSelected = false
+        scheduleButton.isSelected = false
+
+        selectedButton.isSelected = true
     }
 
     private fun addTestTask() {
