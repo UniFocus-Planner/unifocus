@@ -16,13 +16,13 @@
         android:paddingBottom="10dp"/>
 
     <Button
-        android:id="@+id/addButton"
+        android:id="@+id/addTestTaskButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add test task" />
 
     <Button
-        android:id="@+id/deleteButton"
+        android:id="@+id/deleteAllTasksButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Delete all tasks" />
