@@ -22,6 +22,12 @@
         android:text="Add test task" />
 
     <Button
+        android:id="@+id/add_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add task" />
+
+    <Button
         android:id="@+id/deleteAllTasksButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

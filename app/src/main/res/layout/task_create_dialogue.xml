@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:rotation="179"
+        android:scaleY="3" />
+
+    <EditText
+        android:id="@+id/name_task_add"
+        android:layout_width="380dp"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:inputType="text" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:rotation="179"
+        android:scaleY="3" />
+
+    <EditText
+        android:id="@+id/description_task_add"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="top"
+        android:hint="Description"
+        android:inputType="text" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:rotation="179"
+        android:scaleY="3" />
+
+    <EditText
+        android:id="@+id/deadline_task_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:contextClickable="false"
+        android:ems="10"
+        android:focusableInTouchMode="false"
+        android:inputType="text"
+        android:selectAllOnFocus="false"
+        android:singleLine="false"
+        android:text="Deadline"
+        android:textColor="#646464" />
+
+    <Button
+        android:id="@+id/buttonAddDeadline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorPrimary"
+        android:drawableStart="@android:drawable/ic_menu_my_calendar"
+        android:gravity="start|center_vertical"
+        android:text="Add deadline" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <EditText
+        android:id="@+id/notes_task_add"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="top"
+        android:hint="Notes"
+        android:inputType="textMultiLine" />
+
+    <Spinner
+        android:id="@+id/dropdown_task_add"
+        android:layout_width="match_parent"
+        android:layout_height="63dp" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <Button
+        android:id="@+id/button_add_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add task" />
+
+</LinearLayout>

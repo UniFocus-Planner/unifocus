@@ -10,12 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
 import com.example.unifocus.UniFocusApp
+import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.ui.adapter.TaskAdapter
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
 
-class TodayTasksScreen : Fragment() {
+class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TaskAdapter
     private lateinit var viewModel: UniFocusViewModel
@@ -35,17 +36,18 @@ class TodayTasksScreen : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
 
-        adapter = TaskAdapter()
-
-        recyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.adapter = adapter
-
         val addButton: Button = view.findViewById(R.id.addTestTaskButton)
+
         addButton.setOnClickListener {
             viewModel.createTask(
                 name = "Новая задача",
                 description = "Описание",
                 taskType = TaskType.CLASS)
+        }
+
+        val addTask: Button = view.findViewById(R.id.add_task)
+        addTask.setOnClickListener {
+            showCreateTaskDialog()
         }
 
         val delTasksButton: Button = view.findViewById(R.id.deleteAllTasksButton)
@@ -58,5 +60,15 @@ class TodayTasksScreen : Fragment() {
         })
 
         return view
+    }
+
+    private fun showCreateTaskDialog() {
+        val dialog = CreateTaskDialog.newInstance()
+        dialog.setOnTaskCreatedListener(this)
+        dialog.show(parentFragmentManager, "CreateTaskDialog")
+    }
+
+    override fun onTaskCreated(task: Task) {
+        viewModel.addTask(task)
     }
 }
