@@ -16,8 +16,14 @@
         android:id="@+id/name_task_add"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
+        android:editable="true"
+        android:enabled="true"
         android:hint="Name"
-        android:inputType="text" />
+        android:inputType="text|textNoSuggestions"
+        android:password="false"
+        android:phoneNumber="false"
+        android:singleLine="true"
+        android:text="Name" />
 
     <Space
         android:layout_width="match_parent"
@@ -28,10 +34,10 @@
     <EditText
         android:id="@+id/description_task_add"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:gravity="top"
         android:hint="Description"
-        android:inputType="text" />
+        android:inputType="text|textNoSuggestions" />
 
     <Space
         android:layout_width="match_parent"
@@ -47,7 +53,7 @@
         android:contextClickable="false"
         android:ems="10"
         android:focusableInTouchMode="false"
-        android:inputType="text"
+        android:inputType="text|textNoSuggestions"
         android:selectAllOnFocus="false"
         android:singleLine="false"
         android:text="Deadline"
@@ -69,10 +75,10 @@
     <EditText
         android:id="@+id/notes_task_add"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:gravity="top"
         android:hint="Notes"
-        android:inputType="textMultiLine" />
+        android:inputType="text|textMultiLine|textNoSuggestions" />
 
     <Spinner
         android:id="@+id/dropdown_task_add"
