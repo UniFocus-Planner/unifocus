@@ -8,6 +8,7 @@ import com.example.unifocus.data.models.schedule.Schedule
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.data.repository.UniFocusRepository
+import com.example.unifocus.domain.ScheduleFactory
 import com.example.unifocus.domain.TaskFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ import kotlinx.coroutines.withContext
 class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel() {
 
     val classTasks: LiveData<List<Task>> = repository.classTasks.asLiveData()
+    val schedules: LiveData<List<Schedule>> = repository.schedules.asLiveData()
 
     fun createTask(
         name: String,
@@ -25,6 +27,13 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         additionalInformation: String? = null
     ) {
         addTask(TaskFactory.createTask(name, description, deadline, taskType, additionalInformation))
+    }
+
+    fun createSchedule(
+        name: String,
+        tasks: List<Task>
+    ) {
+        addSchedule(ScheduleFactory.createSchedule(name), tasks)
     }
 
     fun addTask(task: Task) {

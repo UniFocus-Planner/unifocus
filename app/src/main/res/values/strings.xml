@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Unifocus</string>
+    <string name="allow_notifications">Разрешить уведомления?</string>
+    <string name="notification">Allow notifications?</string>
+    <string name="profile">Профиль</string>
+    <string name="settings">Настройки</string>
+    <string name="schedule">Расписание</string>
+    <string name="allow_vibration">Разрешить вибрацию?</string>
 </resources>

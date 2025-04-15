@@ -10,6 +10,7 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
     private val scheduleDao = database.scheduleDao()
 
     val classTasks: Flow<List<Task>> = taskDao.getTasksByType("CLASS")
+    val schedules: Flow<List<Schedule>> = scheduleDao.getSchedules()
 
     suspend fun addTask(task: Task) = taskDao.insertTask(task)
 
