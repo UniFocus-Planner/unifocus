@@ -18,6 +18,7 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
 
     val classTasks: LiveData<List<Task>> = repository.classTasks.asLiveData()
     val schedules: LiveData<List<Schedule>> = repository.schedules.asLiveData()
+    val selectedSchedules: LiveData<List<Schedule>> = repository.selectedSchedules.asLiveData()
 
     fun createTask(
         name: String,
@@ -27,13 +28,6 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         additionalInformation: String? = null
     ) {
         addTask(TaskFactory.createTask(name, description, deadline, taskType, additionalInformation))
-    }
-
-    fun createSchedule(
-        name: String,
-        tasks: List<Task>
-    ) {
-        addSchedule(ScheduleFactory.createSchedule(name), tasks)
     }
 
     fun addTask(task: Task) {
@@ -72,9 +66,30 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         }
     }
 
+    fun createSchedule(
+        name: String,
+        tasks: List<Task>
+    ) {
+        addSchedule(ScheduleFactory.createSchedule(name), tasks)
+    }
+
     fun addSchedule(schedule: Schedule, tasks: List<Task>) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.addSchedule(schedule, tasks)
+        }
+    }
+
+    fun selectSchedule(name: String, value:Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.selectSchedule(name,value)
+        }
+    }
+
+    fun deleteSchedule(
+        name: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteSchedule(name)
         }
     }
 }

@@ -15,10 +15,13 @@ import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.ui.adapter.ScheduleAdapter
 import com.example.unifocus.ui.adapter.TaskAdapter
+import com.example.unifocus.ui.dialogues.CreateScheduleDialogue
+import com.example.unifocus.ui.dialogues.CreateTaskDialog
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
+import java.util.UUID
 
-class ProfileScreen : Fragment() {
+class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ScheduleAdapter
     private lateinit var viewModel: UniFocusViewModel
@@ -34,38 +37,39 @@ class ProfileScreen : Fragment() {
         val repository = (requireActivity().application as UniFocusApp).repository
         val factory = UniFocusViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[UniFocusViewModel::class.java]
-        adapter = ScheduleAdapter()
+        adapter = ScheduleAdapter {
+            viewModel.deleteSchedule(it.groupName)
+        }
+
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
 
-        val addButton: AppCompatImageButton = view.findViewById(R.id.schedule_add_button)
-
-        addButton.setOnClickListener {
-            viewModel.createSchedule(
-                name = "Расписание",
-                tasks = listOf()
-            )
+        view.findViewById<AppCompatImageButton?>(R.id.schedule_add_button).also {
+            it.setOnClickListener {
+                showCreateScheduleDialog()
+            }
         }
 
-        //val addTask: Button = view.findViewById(R.id.schedule_add_button)
-        //addTask.setOnClickListener {
-        //    //showCreateTaskDialog()
-        //}
+        view.findViewById<AppCompatImageButton>(R.id.schedule_add_test_button).also {
+            it.setOnClickListener {
+                viewModel.createSchedule(UUID.randomUUID().toString(), listOf())
+            }
+        }
 
-        viewModel.schedules.observe(viewLifecycleOwner, { schedules ->
+        viewModel.selectedSchedules.observe(viewLifecycleOwner, { schedules ->
             adapter.submitList(schedules)
         })
 
         return view
     }
 
-   //private fun showCreateTaskDialog() {
-   //    val dialog = CreateTaskDialog.newInstance()
-   //    dialog.setOnTaskCreatedListener(this)
-   //    dialog.show(parentFragmentManager, "CreateTaskDialog")
-   //}
+   private fun showCreateScheduleDialog() {
+       val dialog = CreateScheduleDialogue.newInstance()
+       dialog.setOnScheduleCreatedListener(this)
+       dialog.show(parentFragmentManager, "CreateScheduleDialog")
+   }
 
-   //override fun onTaskCreated(task: Task) {
-   //    viewModel.addTask(task)
-   //}
+   override fun onScheduleCreated(task: Task) {
+       viewModel.addTask(task)
+   }
 }

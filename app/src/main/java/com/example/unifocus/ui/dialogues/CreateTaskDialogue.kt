@@ -1,4 +1,4 @@
-package com.example.unifocus.ui.view
+package com.example.unifocus.ui.dialogues
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,6 @@ import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.domain.TaskFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.textfield.TextInputEditText
 
 class CreateTaskDialog : BottomSheetDialogFragment() {
     private var listener: OnTaskCreatedListener? = null

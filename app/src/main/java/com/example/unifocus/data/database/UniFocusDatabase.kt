@@ -7,7 +7,7 @@ import com.example.unifocus.data.dao.ScheduleDao
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.dao.TaskDao
 
-@Database(entities = [Task::class, Schedule::class], version = 1)
+@Database(entities = [Task::class, Schedule::class], version = 2)
 abstract class UniFocusDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     abstract fun scheduleDao(): ScheduleDao
@@ -22,7 +22,9 @@ abstract class UniFocusDatabase : RoomDatabase() {
                     context.applicationContext,
                     UniFocusDatabase::class.java,
                     "unifocus_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

@@ -11,6 +11,7 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
 
     val classTasks: Flow<List<Task>> = taskDao.getTasksByType("CLASS")
     val schedules: Flow<List<Schedule>> = scheduleDao.getSchedules()
+    val selectedSchedules: Flow<List<Schedule>> = scheduleDao.getSelectedSchedules()
 
     suspend fun addTask(task: Task) = taskDao.insertTask(task)
 
@@ -39,5 +40,9 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
 
     suspend fun getSchedule(groupName: String): Schedule? {
         return scheduleDao.getSchedule(groupName)
+    }
+
+    suspend fun selectSchedule(name:String, value:Boolean) {
+        scheduleDao.updateSelected(name, value)
     }
 }

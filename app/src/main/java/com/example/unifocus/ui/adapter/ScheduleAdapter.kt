@@ -3,6 +3,9 @@ package com.example.unifocus.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,19 +13,56 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
 import com.example.unifocus.data.models.schedule.Schedule
 
-class ScheduleAdapter : ListAdapter<Schedule, ScheduleAdapter.ScheduleViewHolder>(ScheduleDiffCallback()) {
+class ScheduleAdapter(
+    private val onDeleteClick: (Schedule) -> Unit
+) : ListAdapter<Schedule, ScheduleAdapter.ScheduleViewHolder>(ScheduleDiffCallback()), Filterable {
 
-    class ScheduleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val nameView: TextView = itemView.findViewById(R.id.schedule_title)
+    private var originalList: List<Schedule> = emptyList()
+
+    fun submitData(list: List<Schedule>) {
+        originalList = list
+        submitList(list)
+    }
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val query = constraint?.toString()?.lowercase() ?: ""
+                val filtered = if (query.isEmpty()) {
+                    originalList
+                } else {
+                    originalList.filter {
+                        it.groupName.lowercase().contains(query)
+                    }
+                }
+                return FilterResults().apply { values = filtered }
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                submitList(results?.values as? List<Schedule>)
+            }
+        }
+    }
+
+    class ScheduleViewHolder(
+        scheduleView: View,
+        private val onDeleteClick: (Schedule) -> Unit
+    ) : RecyclerView.ViewHolder(scheduleView) {
+        private val nameView: TextView = scheduleView.findViewById(R.id.schedule_title)
+        private val deleteButton: ImageButton = scheduleView.findViewById(R.id.schedule_delete_button)
 
         fun bind(schedule: Schedule) {
             nameView.text = schedule.groupName
+
+            deleteButton.setOnClickListener {
+                onDeleteClick(schedule)
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.schedule_item, parent, false)
-        return ScheduleViewHolder(view)
+        return ScheduleViewHolder(view, onDeleteClick)
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {

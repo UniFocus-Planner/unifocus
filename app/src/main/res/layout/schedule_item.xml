@@ -21,6 +21,6 @@
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Удалить"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:src="@android:drawable/ic_menu_delete"
         android:tint="#000000" />
 </LinearLayout>
