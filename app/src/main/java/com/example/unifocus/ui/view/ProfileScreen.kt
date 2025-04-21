@@ -6,17 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
 import com.example.unifocus.UniFocusApp
 import com.example.unifocus.data.models.task.Task
-import com.example.unifocus.data.models.task.TaskType
+import com.example.unifocus.domain.ScheduleTableDownloader
 import com.example.unifocus.ui.adapter.ScheduleAdapter
-import com.example.unifocus.ui.adapter.TaskAdapter
 import com.example.unifocus.ui.dialogues.CreateScheduleDialogue
-import com.example.unifocus.ui.dialogues.CreateTaskDialog
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
 import java.util.UUID
@@ -59,6 +58,26 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         viewModel.selectedSchedules.observe(viewLifecycleOwner, { schedules ->
             adapter.submitList(schedules)
         })
+
+
+        // Скачивание расписания (тест)
+        var scheduleTableManager: ScheduleTableDownloader = ScheduleTableDownloader()
+        view.findViewById<Button>(R.id.update_tables_button).also {
+            it.setOnClickListener {
+                Toast.makeText(requireContext(), "Обновление расписания...", Toast.LENGTH_SHORT).show()
+                val fileUrl = "https://misis.ru/files/-/0d087c30c57f81686c70d853648d7812/gi_170325.xls"
+                val fileName = "test_schedule_table.xls"
+
+                scheduleTableManager.downloadAndReplace(requireContext(), fileUrl, fileName) { success -> activity?.runOnUiThread {
+                        if (success) {
+                            Toast.makeText(context, "Расписание успешно обновлено", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Не удалось обновить данные", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
 
         return view
     }
