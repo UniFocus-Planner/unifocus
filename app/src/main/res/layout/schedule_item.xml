@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:layout_marginBottom="8dp"
+    android:background="@drawable/rounded_white_background"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingHorizontal="8dp">
@@ -12,15 +13,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="#000000"
-        android:textSize="18sp" />
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/blue_main"
+        android:textSize="16sp" />
 
     <ImageButton
         android:id="@+id/schedule_delete_button"
         android:layout_width="45dp"
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:backgroundTint="#0C68FF"
         android:contentDescription="Удалить"
+        android:foregroundTint="#FDFDFD"
         android:src="@android:drawable/ic_menu_delete"
-        android:tint="#000000" />
+        android:tint="@color/blue_main" />
 </LinearLayout>

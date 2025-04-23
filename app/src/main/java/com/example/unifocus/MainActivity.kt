@@ -2,7 +2,7 @@ package com.example.unifocus
 
 import androidx.fragment.app.Fragment
 import android.os.Bundle
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 
 import com.example.unifocus.ui.view.ProfileScreen
@@ -10,9 +10,9 @@ import com.example.unifocus.ui.view.ScheduleScreen
 import com.example.unifocus.ui.view.TodayTasksScreen
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var todayButton: Button
-    private lateinit var scheduleButton: Button
-    private lateinit var profileButton: Button
+    private lateinit var todayButton: ImageButton
+    private lateinit var scheduleButton: ImageButton
+    private lateinit var profileButton: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,21 +20,21 @@ class MainActivity : AppCompatActivity() {
 
         replaceFragment(ScheduleScreen())
 
-        scheduleButton = findViewById<Button>(R.id.schedule_screen).also { button ->
+        scheduleButton = findViewById<ImageButton>(R.id.schedule_screen).also { button ->
             button.setOnClickListener {
                 replaceFragment(ScheduleScreen())
                 updateButtonSelection(button)
             }
         }
 
-        todayButton = findViewById<Button>(R.id.today_button).also { button ->
+        todayButton = findViewById<ImageButton>(R.id.today_button).also { button ->
             button.setOnClickListener {
                 replaceFragment(TodayTasksScreen())
                 updateButtonSelection(button)
             }
         }
 
-        profileButton = findViewById<Button>(R.id.profile_button).also { button ->
+        profileButton = findViewById<ImageButton>(R.id.profile_button).also { button ->
             button.setOnClickListener {
                 replaceFragment(ProfileScreen())
                 updateButtonSelection(button)
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun updateButtonSelection(selectedButton:Button) {
+    private fun updateButtonSelection(selectedButton:ImageButton) {
         profileButton.isSelected = false
         todayButton.isSelected = false
         scheduleButton.isSelected = false

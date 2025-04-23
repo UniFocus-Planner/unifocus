@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import com.example.unifocus.R
 import com.example.unifocus.data.models.task.Task
@@ -54,14 +55,26 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
                 nameInput.error = "Введите название задачи"
             }
         }
+
+        val closeButton = view.findViewById<ImageButton>(R.id.close_button_task_add)
+
+        closeButton.setOnClickListener {
+            dismiss()
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+
+        val dialog = dialog
+        if (dialog != null) {
+            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+
+            val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet)
+            behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+        }
     }
 
     companion object {
