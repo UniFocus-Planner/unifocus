@@ -19,6 +19,8 @@ import com.example.unifocus.ui.dialogues.CreateScheduleDialogue
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
 import java.util.UUID
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicInteger
 
 class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListener {
     private lateinit var recyclerView: RecyclerView
@@ -60,22 +62,47 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         })
 
 
-        // Скачивание расписания (тест)
-        var scheduleTableManager: ScheduleTableDownloader = ScheduleTableDownloader()
         view.findViewById<Button>(R.id.update_tables_button).also {
             it.setOnClickListener {
+                it.isEnabled = false
                 Toast.makeText(requireContext(), "Обновление расписания...", Toast.LENGTH_SHORT).show()
-                val fileUrl = "https://misis.ru/files/-/0d087c30c57f81686c70d853648d7812/gi_170325.xls"
-                val fileName = "test_schedule_table.xls"
+                val tablesToDownload = listOf(
+                    Pair("schedule_gi.xls", "https://misis.ru/files/-/a939ace09ed30a192497ee99edbda4d0/gi_140425.xls"),
+                    Pair("schedule_ibmi.xls", "https://misis.ru/files/-/1f39a37915a1066752bf3e2221bf6d5a/ibmi_120325.xls"),
+                    Pair("schedule_ibo.xls", "https://misis.ru/files/-/dbba1aeada7152fef480fd72714b85b2/ibo_150425.xlsx"),
+                    Pair("schedule_eupp.xls", "https://misis.ru/files/-/a2f6b24a848d9f17b760cb941a475d4d/eupp_110425.xls"),
+                    Pair("schedule_ifki.xls", "https://misis.ru/files/-/1ca0c742e7813101075aaf5138db4dc6/ifki_120325.xls"),
+                    Pair("schedule_itkn.xls", "https://misis.ru/files/-/262aaeaf7b610a2c2ed0d5365596f5f6/itkn_120325.xls"),
+                    Pair("schedule_inm.xls", "https://misis.ru/files/-/66e305b5c5ecab6673843363f11803e4/inm-270325.xls"),
+                    Pair("schedule_ekoteh.xls", "https://misis.ru/files/-/d9001c62a2054961aa607c95f273f62a/ekoteh_120325.xls"),
+                    Pair("schedule_pish-mast.xls", "https://misis.ru/files/-/8b077073a7c38f58d737451e79eb5fbd/pish-mast_120325.xls")
+                )
 
-                scheduleTableManager.downloadAndReplace(requireContext(), fileUrl, fileName) { success -> activity?.runOnUiThread {
+                val latch = CountDownLatch(tablesToDownload.size)
+                val results = AtomicInteger(0)
+                val scheduleTableDownloader = ScheduleTableDownloader()
+
+                tablesToDownload.forEach { (fileName, fileUrl) ->
+                    scheduleTableDownloader.downloadAndReplace(requireContext(), fileUrl, fileName) { success ->
                         if (success) {
-                            Toast.makeText(context, "Расписание успешно обновлено", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Не удалось обновить данные", Toast.LENGTH_SHORT).show()
+                            results.incrementAndGet()
                         }
+                        latch.countDown()
                     }
                 }
+
+                Thread {
+                    latch.await()
+                    activity?.runOnUiThread {
+                        val message = if (results.get() == tablesToDownload.size) {
+                            "Данные успешно обновлены (${results.get()}/${tablesToDownload.size})"
+                        } else {
+                            "Обновлено ${results.get()} из ${tablesToDownload.size} таблиц"
+                        }
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        it.isEnabled = true
+                    }
+                }.start()
             }
         }
 

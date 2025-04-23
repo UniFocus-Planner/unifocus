@@ -154,5 +154,4 @@ class ScheduleTableDownloader {
             throw FileNotFoundException("File not found: ${file.absolutePath}")
         }
     }
-
 }
