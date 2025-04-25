@@ -35,10 +35,10 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val nameInput = view.findViewById<TextView>(R.id.name_task_add)
-        val descInput = view.findViewById<TextView>(R.id.description_task_add)
-        val additionalInformation = view.findViewById<TextView>(R.id.notes_task_add)
-        val createButton = view.findViewById<Button>(R.id.button_add_task)
+        val nameInput = view.findViewById<TextView>(R.id.name_task_edit)
+        val descInput = view.findViewById<TextView>(R.id.description_task)
+        val additionalInformation = view.findViewById<TextView>(R.id.notes_task)
+        val createButton = view.findViewById<Button>(R.id.button_task)
 
         createButton.setOnClickListener {
             val name = nameInput.text.toString().trim()
@@ -56,7 +56,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
             }
         }
 
-        val closeButton = view.findViewById<ImageButton>(R.id.close_button_task_add)
+        val closeButton = view.findViewById<ImageButton>(R.id.close_button_task_edit)
 
         closeButton.setOnClickListener {
             dismiss()

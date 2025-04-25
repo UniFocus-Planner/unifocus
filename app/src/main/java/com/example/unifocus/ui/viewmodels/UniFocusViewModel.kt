@@ -36,6 +36,12 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         }
     }
 
+    fun updateTask(task: Task) {
+        viewModelScope.launch {
+            repository.updateTask(task)
+        }
+    }
+
     fun addTasks(tasks: List<Task>) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.addTasks(tasks)

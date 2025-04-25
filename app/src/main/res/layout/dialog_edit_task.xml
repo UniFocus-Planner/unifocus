@@ -103,7 +103,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button_background"
         android:fontFamily="@font/montserrat_semibold"
-        android:text="Создать"
+        android:text="Отредактировать"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 		

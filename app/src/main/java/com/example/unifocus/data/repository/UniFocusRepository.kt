@@ -17,6 +17,10 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
 
     suspend fun addTasks(tasks: List<Task>) = taskDao.insertTasks(tasks)
 
+    suspend fun updateTask(task: Task) {
+        taskDao.updateTask(task)
+    }
+
     suspend fun deleteTaskByName(name: String) {
         taskDao.getTasksByName(name)?.let { taskDao.deleteTask(it) }
     }
