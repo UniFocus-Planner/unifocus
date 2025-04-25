@@ -18,6 +18,7 @@ import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
 
 class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
+    // Инициализация адаптера
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: TaskAdapter
     private lateinit var viewModel: UniFocusViewModel
@@ -30,6 +31,7 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
 
         val view = inflater.inflate(R.layout.today_tasks, container, false)
 
+        // Задачи помещаются в RecyclerView
         val repository = (requireActivity().application as UniFocusApp).repository
         val factory = UniFocusViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[UniFocusViewModel::class.java]
@@ -56,6 +58,7 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
             viewModel.deleteAllTasks()
         }
 
+        // Здесь задачи прослушиваются и передаются в адаптер
         viewModel.classTasks.observe(viewLifecycleOwner, { tasks ->
             adapter.submitList(tasks)
         })

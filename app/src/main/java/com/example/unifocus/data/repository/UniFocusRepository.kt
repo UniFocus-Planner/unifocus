@@ -9,7 +9,9 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
     private val taskDao = database.taskDao()
     private val scheduleDao = database.scheduleDao()
 
+    // Отбор задач с типом CLASS
     val classTasks: Flow<List<Task>> = taskDao.getTasksByType("CLASS")
+
     val schedules: Flow<List<Schedule>> = scheduleDao.getSchedules()
     val selectedSchedules: Flow<List<Schedule>> = scheduleDao.getSelectedSchedules()
 
