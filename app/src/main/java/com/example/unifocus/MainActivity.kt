@@ -90,9 +90,10 @@ class MainActivity : ComponentActivity() {
                 val channelID = channel_id
                 val title = "Test Notification"
                 val text = "This is a test notification"
-                val delayInSeconds = 2 // Delay to test outside the app
 
-                scheduleNotification(this, delayInSeconds, notificationID, channelID, title, text)
+                val targetTime = Calendar.getInstance()
+
+                scheduleNotification(this, targetTime, notificationID, channelID, title, text)
             }
         }
     }
@@ -137,9 +138,6 @@ class MainActivity : ComponentActivity() {
                 REQUEST_CODE_POST_NOTIFICATIONS
             )
         }
-        else {
-            Toast.makeText(this, "Notification permission request is not needed", Toast.LENGTH_SHORT).show()
-        }
     }
 
     fun CreateNotificationChannel(context: Context, channelId: String) {
@@ -166,7 +164,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun scheduleNotification(context: Context, delayInSeconds: Int, notificationId: Int, channelId: String, title: String, text: String) {
+    fun scheduleNotification(
+        context: Context,
+        targetTime: Calendar,
+        notificationId: Int,
+        channelId: String,
+        title: String,
+        text: String
+    ) {
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra("notificationId", notificationId)
             putExtra("channelId", channelId)
@@ -182,14 +187,21 @@ class MainActivity : ComponentActivity() {
         )
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val timeInMillis = Calendar.getInstance().timeInMillis + delayInSeconds * 1000
 
-        alarmManager.set(
+        // Android 6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                timeInMillis,
+                targetTime.timeInMillis,
                 pendingIntent
             )
-
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                targetTime.timeInMillis,
+                pendingIntent
+            )
+        }
     }
 
 }
