@@ -7,6 +7,74 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Заголовок с месяцем и годом -->
+    <TextView
+        android:id="@+id/month_year_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="16dp"/>
+
+    <!-- Строка с днями недели -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Пн"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Вт"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ср"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Чт"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Пт"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Сб"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Вс"
+            android:gravity="center"/>
+    </LinearLayout>
+
     <!-- RecyclerView с GridLayoutManager для отображения дней в календаре -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendar_grid"
@@ -27,9 +95,8 @@
             android:id="@+id/today_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Today: 1 March 2025"
             android:textSize="18sp"
-            android:fontFamily="sans-serif-medium"/>
+            android:padding="16dp"/>
     </LinearLayout>
 
     <!-- RecyclerView для списка задач -->
