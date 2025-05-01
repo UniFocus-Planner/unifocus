@@ -13,6 +13,8 @@ activityCompose = "1.10.0"
 composeBom = "2024.04.01"
 lifecycleRuntimeKtxVersion = "2.6.2"
 lifecycleViewmodelKtx = "2.6.2"
+poi = "5.2.3"
+poiOoxml = "5.2.3"
 roomCompiler = "1.0.0"
 roomGuava = "1.0.0"
 roomKtx = "1.0.0"
@@ -63,6 +65,8 @@ androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview"
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+poi = { module = "org.apache.poi:poi", version.ref = "poi" }
+poi-ooxml = { module = "com.github.SUPERCILEX.poi-android:poi-ooxml", version.ref = "poiOoxml" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.unifocus"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -42,7 +42,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
@@ -75,6 +74,10 @@ dependencies {
     kapt(libs.compiler)
 
     implementation(libs.androidx.room.runtime.v100)
+
+
+    implementation(libs.poi)
+
 
     // If this project only uses Java source, use the Java annotationProcessor
     // No additional plugins are necessary

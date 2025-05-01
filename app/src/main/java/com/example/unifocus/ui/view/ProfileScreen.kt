@@ -2,6 +2,7 @@ package com.example.unifocus.ui.view
 
 import androidx.fragment.app.Fragment
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.example.unifocus.R
 import com.example.unifocus.UniFocusApp
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.domain.ScheduleTableDownloader
+import com.example.unifocus.domain.ScheduleTableParser
 import com.example.unifocus.ui.adapter.ScheduleAdapter
 import com.example.unifocus.ui.dialogues.CreateScheduleDialogue
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
@@ -105,6 +107,28 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                 }.start()
             }
         }
+
+        view.findViewById<Button>(R.id.parse_tables_button).also {
+            it.setOnClickListener {
+                println("parsing test")
+                val scheduleTableParser = ScheduleTableParser()
+                val fileName = "schedule_gi.xls"
+                val filePath = "/storage/emulated/0/Android/data/com.example.unifocus/files/Download/" + fileName
+                val result = scheduleTableParser.parseSchedule(filePath)
+                for ((group, scheduleList) in result) {
+                    println("----------")
+                    println("Группа: $group")
+                    for (item in scheduleList) {
+                        println("  ${item.day} | Пара ${item.lessonNum}: ${item.subject}, ${item.teachers}")
+                    }
+                }
+
+
+                //println(result.toString())
+            }
+        }
+
+        return view
 
         return view
     }
