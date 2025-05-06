@@ -14,7 +14,9 @@ import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.ui.adapter.TaskAdapter
 import com.example.unifocus.ui.decorators.VerticalSpaceItemDecoration
+import com.example.unifocus.ui.dialogues.CreateScheduleDialogue
 import com.example.unifocus.ui.dialogues.CreateTaskDialog
+import com.example.unifocus.ui.dialogues.EditTaskDialogFragment
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
 
@@ -36,7 +38,7 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
         val repository = (requireActivity().application as UniFocusApp).repository
         val factory = UniFocusViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[UniFocusViewModel::class.java]
-        adapter = TaskAdapter()
+        adapter = TaskAdapter {task -> showEditTaskDialog(task)}
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(VerticalSpaceItemDecoration(16))
@@ -72,6 +74,17 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
         val dialog = CreateTaskDialog.newInstance()
         dialog.setOnTaskCreatedListener(this)
         dialog.show(parentFragmentManager, "CreateTaskDialog")
+    }
+
+    private fun showEditTaskDialog(task: Task) {
+        val dialog = EditTaskDialogFragment.newInstance(task)
+        dialog.setOnTaskUpdatedListener(object : EditTaskDialogFragment.OnTaskUpdatedListener {
+
+            override fun onTaskUpdated(task: Task) {
+                viewModel.updateTask(task)
+            }
+        })
+        dialog.show(parentFragmentManager, "EditTaskDialog")
     }
 
     override fun onTaskCreated(task: Task) {
