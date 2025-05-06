@@ -2,7 +2,7 @@ package com.example.unifocus.ui.view
 
 import androidx.fragment.app.Fragment
 import android.os.Bundle
-import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -111,24 +111,23 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         view.findViewById<Button>(R.id.parse_tables_button).also {
             it.setOnClickListener {
                 println("parsing test")
-                val scheduleTableParser = ScheduleTableParser()
                 val fileName = "schedule_gi.xls"
                 val filePath = "/storage/emulated/0/Android/data/com.example.unifocus/files/Download/" + fileName
-                val result = scheduleTableParser.parseSchedule(filePath)
-                for ((group, scheduleList) in result) {
-                    println("----------")
-                    println("Группа: $group")
-                    for (item in scheduleList) {
-                        println("  ${item.day} | Пара ${item.lessonNum}: ${item.subject}, ${item.teachers}")
+                val parser = ScheduleTableParser()
+                val result = parser.parse(filePath)
+
+                result.forEach { (group, items) ->
+                    Log.d("Schedule", "_______________________________")
+                    Log.d("Schedule", "Группа: $group")
+                    items.forEach { item ->
+                        Log.d("Schedule", "${item.day}, ${item.weekType} | Пара ${item.lessonNum}: ${item.subject}, ${item.room}, ${item.teachers}")
                     }
+
+                    //КОСТЫЛЬ!!!!! (Для нормального вывода logcat)
+                    Thread.sleep(5)
                 }
-
-
-                //println(result.toString())
             }
         }
-
-        return view
 
         return view
     }
