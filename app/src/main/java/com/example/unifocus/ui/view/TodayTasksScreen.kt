@@ -13,6 +13,7 @@ import com.example.unifocus.UniFocusApp
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.ui.adapter.TaskAdapter
+import com.example.unifocus.ui.decorators.VerticalSpaceItemDecoration
 import com.example.unifocus.ui.dialogues.CreateTaskDialog
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
@@ -38,6 +39,7 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
         adapter = TaskAdapter()
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
+        recyclerView.addItemDecoration(VerticalSpaceItemDecoration(16))
 
         val addButton: Button = view.findViewById(R.id.addTestTaskButton)
 

@@ -1,98 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Space
+    <!-- Шапка с заголовком и кнопкой закрытия -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="28dp"
-        android:rotation="179"
-        android:scaleY="3" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Task"
+            android:textColor="#005EB8"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/close_button_task_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Close"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:tint="@color/blue_main"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <EditText
         android:id="@+id/name_task_add"
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
-        android:editable="true"
-        android:enabled="true"
-        android:hint="Name"
-        android:inputType="text|textNoSuggestions"
-        android:password="false"
-        android:phoneNumber="false"
-        android:singleLine="true"
-        android:text="Name" />
-
-    <Space
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:rotation="179"
-        android:scaleY="3" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_white_background"
+        android:fontFamily="@font/montserrat"
+        android:hint="Name"
+        android:padding="12dp"
+        android:textColor="@color/blue_main"
+        android:textColorHint="@color/blue_main" />
 
     <EditText
         android:id="@+id/description_task_add"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="95dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_white_background"
+        android:fontFamily="@font/montserrat"
         android:gravity="top"
         android:hint="Description"
-        android:inputType="text|textNoSuggestions" />
+        android:padding="12dp"
+        android:textColor="@color/blue_main"
+        android:textColorHint="@color/blue_main" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:rotation="179"
-        android:scaleY="3" />
-
-    <EditText
-        android:id="@+id/deadline_task_add"
+    <TextView
+        android:id="@+id/deadlineText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="false"
-        android:contextClickable="false"
-        android:ems="10"
-        android:focusableInTouchMode="false"
-        android:inputType="text|textNoSuggestions"
-        android:selectAllOnFocus="false"
-        android:singleLine="false"
-        android:text="Deadline"
-        android:textColor="#646464" />
-
-    <Button
-        android:id="@+id/buttonAddDeadline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="?attr/colorPrimary"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_white_background"
         android:drawableStart="@android:drawable/ic_menu_my_calendar"
-        android:gravity="start|center_vertical"
-        android:text="Add deadline" />
-
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="24dp" />
+        android:drawableTint="@color/blue_main"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="Add deadline"
+        android:textColor="@color/blue_main" />
 
     <EditText
         android:id="@+id/notes_task_add"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_white_background"
+        android:fontFamily="@font/montserrat"
         android:gravity="top"
         android:hint="Notes"
-        android:inputType="text|textMultiLine|textNoSuggestions" />
-
-    <Spinner
-        android:id="@+id/dropdown_task_add"
-        android:layout_width="match_parent"
-        android:layout_height="63dp" />
+        android:padding="12dp"
+        android:textColor="@color/blue_main"
+        android:textColorHint="@color/blue_main" />
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="24dp" />
+        android:layout_height="14dp" />
 
     <Button
         android:id="@+id/button_add_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add task" />
-
+        android:background="@drawable/rounded_button_background"
+        android:fontFamily="@font/montserrat_semibold"
+        android:text="Create Task"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+		
 </LinearLayout>

@@ -50,12 +50,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
             }
         }
 
-        view.findViewById<AppCompatImageButton>(R.id.schedule_add_test_button).also {
-            it.setOnClickListener {
-                viewModel.createSchedule(UUID.randomUUID().toString(), listOf())
-            }
-        }
-
         viewModel.selectedSchedules.observe(viewLifecycleOwner, { schedules ->
             adapter.submitList(schedules)
         })
