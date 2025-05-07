@@ -11,7 +11,7 @@ data class ScheduleItem(
     val lessonNum: String,
     val subject: String,
     val teachers: List<String>,
-    val room: List<String>,
+    val rooms: List<String>,
     val weekType: WeekType
 ) {
     enum class WeekType { ODD, EVEN }
@@ -24,12 +24,15 @@ class ScheduleTableParser {
         val inputStream = FileInputStream(file)
         val workbook = WorkbookFactory.create(inputStream)
         val scheduleData = mutableMapOf<String, MutableList<ScheduleItem>>()
-        var sheetsNumber = workbook.numberOfSheets
 
-        //sheetsNumber = 1
+        var firstSheet = 0
+        var lastSheet = workbook.numberOfSheets
+
+        //firstSheet = 2
+        //lastSheet = 3
 
         try {
-            for (sheetIndex in 0 until sheetsNumber) {
+            for (sheetIndex in firstSheet until lastSheet) {
                 val sheet = workbook.getSheetAt(sheetIndex)
                 parseSheet(sheet, scheduleData)
             }
@@ -151,7 +154,7 @@ class ScheduleTableParser {
                             lessonNum = lessonNum,
                             subject = subject,
                             teachers = teachers,
-                            room = rooms,
+                            rooms = rooms,
                             weekType = weekType
                         )
                     }

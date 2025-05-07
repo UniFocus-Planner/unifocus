@@ -106,11 +106,5 @@
             android:layout_height="wrap_content"
             android:text="Обновить таблицы расписания" />
 
-        <Button
-            android:id="@+id/parse_tables_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ПАРСИТЬ" />
-
     </LinearLayout>
 </ScrollView>
