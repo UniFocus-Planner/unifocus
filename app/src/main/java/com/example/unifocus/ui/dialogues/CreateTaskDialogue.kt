@@ -12,9 +12,15 @@ import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.domain.TaskFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.Locale
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 
 class CreateTaskDialog : BottomSheetDialogFragment() {
     private var listener: OnTaskCreatedListener? = null
+    private var selectedDeadline: Long? = null
 
     interface OnTaskCreatedListener {
         fun onTaskCreated(task: Task)
@@ -39,15 +45,20 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
         val descInput = view.findViewById<TextView>(R.id.description_task)
         val additionalInformation = view.findViewById<TextView>(R.id.notes_task)
         val createButton = view.findViewById<Button>(R.id.button_task)
+        val deadlineText = view.findViewById<TextView>(R.id.deadlineText)
+        deadlineText.setOnClickListener {
+            showDateTimePicker(deadlineText)
+        }
 
         createButton.setOnClickListener {
             val name = nameInput.text.toString().trim()
             if (name.isNotEmpty()) {
                 val task = TaskFactory.createTask(
-                    name = nameInput.text.toString(),
+                    name = name,
                     description = descInput.text.toString(),
-                    additionalInformation = additionalInformation.text.toString(),
-                    taskType = TaskType.CLASS
+                    deadline = selectedDeadline,
+                    taskType = TaskType.CLASS,
+                    additionalInformation = additionalInformation.text.toString()
                 )
                 listener?.onTaskCreated(task)
                 dismiss()
@@ -61,6 +72,30 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
         closeButton.setOnClickListener {
             dismiss()
         }
+    }
+
+    private fun showDateTimePicker(deadlineText: TextView) {
+        val calendar = Calendar.getInstance()
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                TimePickerDialog(
+                    requireContext(),
+                    { _, hour, minute ->
+                        calendar.set(year, month, day, hour, minute)
+                        selectedDeadline = calendar.timeInMillis
+                        deadlineText.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+                            .format(calendar.time)
+                    },
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    true
+                ).show()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
     }
 
     override fun onStart() {

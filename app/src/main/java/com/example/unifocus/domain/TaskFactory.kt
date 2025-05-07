@@ -15,7 +15,7 @@ class TaskFactory {
             return Task(
                 name = name,
                 description = description,
-                deadline = deadline ?: System.currentTimeMillis(),
+                deadline = deadline,
                 taskType = taskType,
                 additionalInformation = additionalInformation
             )

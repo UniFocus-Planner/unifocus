@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.protolite.well.known.types)
 
     testImplementation(libs.junit)
 
