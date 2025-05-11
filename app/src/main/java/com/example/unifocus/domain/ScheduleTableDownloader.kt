@@ -2,19 +2,13 @@ package com.example.unifocus.domain
 
 import android.Manifest
 import android.app.Activity
-import android.app.DownloadManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Environment
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import java.io.File
-import java.io.FileNotFoundException
-import android.content.BroadcastReceiver
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.Build
+import java.io.*
+import java.net.URL
 import android.util.Log
 
 class ScheduleTableDownloader {
@@ -40,24 +34,32 @@ class ScheduleTableDownloader {
         context: Context,
         fileUrl: String,
         tempFileName: String,
-        onProgress: ((bytesDownloaded: Long, totalBytes: Long) -> Unit)? = null
-    ): Long {
-        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        onDownloadComplete: (success: Boolean, file: File?) -> Unit
+    ) {
         val tempFile = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), tempFileName)
 
-        if (tempFile.exists()) {
-            tempFile.delete()
-        }
+        if (tempFile.exists()) tempFile.delete()
 
-        val request = DownloadManager.Request(Uri.parse(fileUrl))
-            .setTitle("Temp download")
-            .setDescription("Downloading temporary file")
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
-            .setDestinationUri(Uri.fromFile(tempFile))
-            .setAllowedOverMetered(true)
-            .setAllowedOverRoaming(true)
+        Thread {
+            try {
+                val url = URL(fileUrl)
+                val connection = url.openConnection()
+                connection.connect()
+                val input = connection.getInputStream()
+                val output = FileOutputStream(tempFile)
 
-        return downloadManager.enqueue(request)
+                input.copyTo(output)
+
+                output.flush()
+                output.close()
+                input.close()
+
+                onDownloadComplete(true, tempFile)
+            } catch (e: Exception) {
+                Log.e("ManualDownload", "Ошибка загрузки файла", e)
+                onDownloadComplete(false, null)
+            }
+        }.start()
     }
 
     fun replaceFile(
@@ -102,46 +104,15 @@ class ScheduleTableDownloader {
     ): Long {
         val tempFileName = "${fileName}.tmp_${System.currentTimeMillis()}"
 
-        val downloadId = downloadToTempFile(context, fileUrl, tempFileName)
-
-        val receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                if (id == downloadId) {
-                    val status = getDownloadStatus(context, downloadId)
-                    if (status == DownloadManager.STATUS_SUCCESSFUL) {
-                        replaceFile(context, tempFileName, fileName, onComplete)
-                    } else {
-                        onComplete(false)
-                    }
-                    context.unregisterReceiver(this)
-                }
+        downloadToTempFile(context, fileUrl, tempFileName) { success, _ ->
+            if (success) {
+                replaceFile(context, tempFileName, fileName, onComplete)
+            } else {
+                onComplete(false)
             }
         }
 
-        context.registerReceiver(
-            receiver,
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Context.RECEIVER_NOT_EXPORTED
-            } else {
-                ContextCompat.RECEIVER_VISIBLE_TO_INSTANT_APPS
-            }
-        )
-
-        return downloadId
-    }
-
-    private fun getDownloadStatus(context: Context, downloadId: Long): Int {
-        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val query = DownloadManager.Query().setFilterById(downloadId)
-        downloadManager.query(query).use { cursor ->
-            return if (cursor.moveToFirst()) {
-                cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-            } else {
-                DownloadManager.STATUS_FAILED
-            }
-        }
+        return -1L
     }
 
     fun readDownloadedFile(context: Context, fileName: String): String {

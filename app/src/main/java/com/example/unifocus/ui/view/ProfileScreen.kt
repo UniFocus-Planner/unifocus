@@ -2,6 +2,7 @@ package com.example.unifocus.ui.view
 
 import androidx.fragment.app.Fragment
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -71,7 +72,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                 it.isEnabled = false
 
                 // скачивание и замена
-                Toast.makeText(requireContext(), "Обновление расписания...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Обновление расписания...", Toast.LENGTH_LONG).show()
                 val tablesToDownload = listOf(
                     Pair("schedule_gi.xls", "https://misis.ru/files/-/a939ace09ed30a192497ee99edbda4d0/gi_140425.xls"),
                     Pair("schedule_ibmi.xls", "https://misis.ru/files/-/1f39a37915a1066752bf3e2221bf6d5a/ibmi_120325.xls"),
@@ -102,17 +103,9 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                 Thread {
                     latch.await()
                     activity?.runOnUiThread {
-                        val message = if (results.get() == tablesToDownload.size) {
-                            "Данные успешно обновлены (${results.get()}/${tablesToDownload.size})"
-                        } else {
-                            "Обновлено ${results.get()} из ${tablesToDownload.size} таблиц"
-                        }
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-
-
                         // сбор данных по всем скачанным таблицам
                         val tablePathNames = tablesToDownload.map { (fileName, _) ->
-                            "/storage/emulated/0/Android/data/com.example.unifocus/files/Download/$fileName"
+                            "${context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/$fileName"
                         }
 
                         val parser = ScheduleTableParser()
@@ -126,6 +119,15 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                         }
 
                         val scheduleRepository = ScheduleRepository(allScheduleData)
+
+                        val message = if (results.get() == tablesToDownload.size) {
+                            "Данные успешно обновлены (${results.get()}/${tablesToDownload.size})"
+                        } else {
+                            "Обновлено ${results.get()} из ${tablesToDownload.size} таблиц"
+                        }
+
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
 
                         // ТЕСТ
 
