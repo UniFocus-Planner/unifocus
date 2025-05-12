@@ -113,5 +113,11 @@
             android:textColor="#005DB7"
             android:textSize="16sp" />
 
+        <Button
+            android:id="@+id/update_tables_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Обновить таблицы расписания" />
+
     </LinearLayout>
 </ScrollView>
