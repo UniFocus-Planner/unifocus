@@ -13,15 +13,15 @@ import com.example.unifocus.R
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import java.util.Calendar
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.Date
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import com.example.unifocus.domain.ScheduleItem
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class EditTaskDialogFragment : DialogFragment() {
-    private var selectedDeadline: Long? = null
+    private var selectedDeadline: LocalDateTime? = null
 
     interface OnTaskUpdatedListener {
         fun onTaskUpdated(task: Task)
@@ -39,26 +39,29 @@ class EditTaskDialogFragment : DialogFragment() {
         val nameEditText = view.findViewById<TextView>(R.id.name_task_edit)
         val descEditText = view.findViewById<TextView>(R.id.description_task)
         val notes = view.findViewById<TextView>(R.id.notes_task)
+        val teacher = view.findViewById<TextView>(R.id.teacher_task)
 
         val taskId = requireArguments().getInt("id")
         val name = requireArguments().getString("name") ?: ""
         val desc = requireArguments().getString("description")
+        val teach = requireArguments().getString("teacher")
         val typeOrdinal = requireArguments().getInt("taskTypeOrdinal")
-        // val deadline = requireArguments().getLong("deadline", 0L)
         val addInfo = requireArguments().getString("additionalInformation")
 
         nameEditText.setText(name)
         descEditText.setText(desc ?: "")
+        teacher.setText(teach ?: "")
         notes.setText(addInfo ?: "")
 
         val saveButton = view.findViewById<Button>(R.id.button_task)
 
         val deadlineText = view.findViewById<TextView>(R.id.deadlineText)
-        selectedDeadline = requireArguments().getLong("deadline").takeIf { it != 0L }
+
+        // Получаем deadline как LocalDateTime из аргументов
+        selectedDeadline = arguments?.getSerializable("deadline") as? LocalDateTime
 
         selectedDeadline?.let {
-            deadlineText.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
-                .format(Date(it))
+            deadlineText.text = it.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
         }
 
         deadlineText.setOnClickListener {
@@ -72,6 +75,13 @@ class EditTaskDialogFragment : DialogFragment() {
                 description = descEditText.text.toString(),
                 deadline = selectedDeadline,
                 taskType = TaskType.values()[typeOrdinal],
+                room = requireArguments().getString("room"),
+                number = requireArguments().getInt("number"),
+                teacher = teacher.text.toString(),
+                selected = requireArguments().getBoolean("selected"),
+                weekType = (requireArguments().getSerializable("weekType") as? ScheduleItem.WeekType),
+                group = requireArguments().getString("group"),
+                schedule = requireArguments().getString("schedule"),
                 additionalInformation = notes.text.toString()
             )
             listener?.onTaskUpdated(updatedTask)
@@ -89,8 +99,14 @@ class EditTaskDialogFragment : DialogFragment() {
     }
 
     private fun showDateTimePicker(deadlineText: TextView) {
-        val calendar = selectedDeadline?.let { Calendar.getInstance().apply { timeInMillis = it } }
-            ?: Calendar.getInstance()
+        val calendar = Calendar.getInstance()
+        selectedDeadline?.let {
+            calendar.set(Calendar.YEAR, it.year)
+            calendar.set(Calendar.MONTH, it.monthValue - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, it.dayOfMonth)
+            calendar.set(Calendar.HOUR_OF_DAY, it.hour)
+            calendar.set(Calendar.MINUTE, it.minute)
+        }
 
         DatePickerDialog(
             requireContext(),
@@ -98,10 +114,10 @@ class EditTaskDialogFragment : DialogFragment() {
                 TimePickerDialog(
                     requireContext(),
                     { _, hour, minute ->
-                        calendar.set(year, month, day, hour, minute)
-                        selectedDeadline = calendar.timeInMillis
-                        deadlineText.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
-                            .format(calendar.time)
+                        selectedDeadline = LocalDateTime.of(year, month + 1, day, hour, minute)
+                        deadlineText.text = selectedDeadline?.format(
+                            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                        )
                     },
                     calendar.get(Calendar.HOUR_OF_DAY),
                     calendar.get(Calendar.MINUTE),
@@ -122,7 +138,14 @@ class EditTaskDialogFragment : DialogFragment() {
                 putString("name", task.name)
                 putString("description", task.description)
                 putInt("taskTypeOrdinal", task.taskType.ordinal)
-                putLong("deadline", task.deadline ?: 0L)
+                putSerializable("deadline", task.deadline)
+                putString("room", task.room)
+                putString("teacher", task.teacher)
+                putSerializable("weekType", task.weekType)
+                putSerializable("number", task.number)
+                putSerializable("group", task.group)
+                putSerializable("selected", task.selected)
+                putSerializable("schedule", task.schedule)
                 putString("additionalInformation", task.additionalInformation)
             }
             fragment.arguments = args

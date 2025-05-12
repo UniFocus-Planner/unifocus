@@ -2,7 +2,6 @@ package com.example.unifocus.data.dao
 
 import androidx.room.*
 import com.example.unifocus.data.models.schedule.Schedule
-import com.example.unifocus.data.models.task.Task
 import kotlinx.coroutines.flow.Flow
 
 @Dao

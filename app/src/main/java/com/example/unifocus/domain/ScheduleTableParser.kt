@@ -1,5 +1,6 @@
 package com.example.unifocus.domain
 
+import android.util.Log
 import org.apache.poi.ss.usermodel.*
 import java.io.File
 import java.io.FileInputStream
@@ -15,6 +16,10 @@ data class ScheduleItem(
     val weekType: WeekType
 ) {
     enum class WeekType { ODD, EVEN }
+
+    fun print() {
+        Log.d(group, "Group: ${group}, subgroup: ${subgroup}, Day ${day}, Lesson Num ${lessonNum}, Subject ${subject}, WeekType ${weekType}, Teachers ${teachers}, Rooms ${rooms}")
+    }
 }
 
 class ScheduleTableParser {

@@ -13,14 +13,15 @@ import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.domain.TaskFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.Calendar
-import java.text.SimpleDateFormat
 import java.util.Locale
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class CreateTaskDialog : BottomSheetDialogFragment() {
     private var listener: OnTaskCreatedListener? = null
-    private var selectedDeadline: Long? = null
+    private var selectedDeadline: LocalDateTime? = null
 
     interface OnTaskCreatedListener {
         fun onTaskCreated(task: Task)
@@ -46,6 +47,12 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
         val additionalInformation = view.findViewById<TextView>(R.id.notes_task)
         val createButton = view.findViewById<Button>(R.id.button_task)
         val deadlineText = view.findViewById<TextView>(R.id.deadlineText)
+        val teacherText = view.findViewById<TextView>(R.id.teacher_task)
+
+        selectedDeadline?.let {
+            deadlineText.text = it.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.getDefault()))
+        }
+
         deadlineText.setOnClickListener {
             showDateTimePicker(deadlineText)
         }
@@ -58,6 +65,10 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
                     description = descInput.text.toString(),
                     deadline = selectedDeadline,
                     taskType = TaskType.CLASS,
+                    selected = true,
+                    teacher = teacherText.text.toString(),
+                    group = "",
+                    schedule = "",
                     additionalInformation = additionalInformation.text.toString()
                 )
                 listener?.onTaskCreated(task)
@@ -68,7 +79,6 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
         }
 
         val closeButton = view.findViewById<ImageButton>(R.id.close_button_task_edit)
-
         closeButton.setOnClickListener {
             dismiss()
         }
@@ -76,16 +86,32 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
 
     private fun showDateTimePicker(deadlineText: TextView) {
         val calendar = Calendar.getInstance()
+
+        selectedDeadline?.let {
+            calendar.set(Calendar.YEAR, it.year)
+            calendar.set(Calendar.MONTH, it.monthValue - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, it.dayOfMonth)
+            calendar.set(Calendar.HOUR_OF_DAY, it.hour)
+            calendar.set(Calendar.MINUTE, it.minute)
+        }
+
         DatePickerDialog(
             requireContext(),
             { _, year, month, day ->
                 TimePickerDialog(
                     requireContext(),
                     { _, hour, minute ->
-                        calendar.set(year, month, day, hour, minute)
-                        selectedDeadline = calendar.timeInMillis
-                        deadlineText.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
-                            .format(calendar.time)
+                        // Создаем LocalDateTime из выбранных значений
+                        selectedDeadline = LocalDateTime.of(
+                            year,
+                            month + 1, // Месяцы в LocalDateTime от 1 до 12
+                            day,
+                            hour,
+                            minute
+                        )
+                        deadlineText.text = selectedDeadline?.format(
+                            DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.getDefault())
+                        )
                     },
                     calendar.get(Calendar.HOUR_OF_DAY),
                     calendar.get(Calendar.MINUTE),
@@ -101,8 +127,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
     override fun onStart() {
         super.onStart()
 
-        val dialog = dialog
-        if (dialog != null) {
+        dialog?.let { dialog ->
             val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
 

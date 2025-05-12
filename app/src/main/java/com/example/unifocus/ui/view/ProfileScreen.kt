@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
 import com.example.unifocus.UniFocusApp
 import com.example.unifocus.data.models.task.Task
+import com.example.unifocus.domain.ScheduleFactory
 import com.example.unifocus.domain.ScheduleItem
 import com.example.unifocus.domain.ScheduleRepository
 import com.example.unifocus.domain.ScheduleTableDownloader
@@ -23,7 +24,6 @@ import com.example.unifocus.ui.adapter.ScheduleAdapter
 import com.example.unifocus.ui.dialogues.CreateScheduleDialogue
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
-import java.util.UUID
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -44,7 +44,8 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         val factory = UniFocusViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[UniFocusViewModel::class.java]
         adapter = ScheduleAdapter {
-            viewModel.deleteSchedule(it.groupName)
+            viewModel.selectSchedule(it.groupName, false)
+            viewModel.selectScheduleTasks(it, false)
         }
 
         recyclerView = view.findViewById(R.id.recyclerView)
@@ -122,23 +123,25 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
 
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
-
-                        // ТЕСТ
-
-                        val groupFullName = "БПИ-22-РП-3_1"
-                        Log.d("Schedule","parsing test for ${groupFullName}:")
-                        var result = scheduleRepository.filterByFullGroupName(groupFullName)
-                        result.forEach { item ->
-                            Log.d("Schedule","${item.day}, ${item.weekType} | Пара ${item.lessonNum}: ${item.subject}, ${item.rooms}, ${item.teachers}")
+                        scheduleRepository.getAllScheduleItems().forEach {
+                            it.print()
                         }
 
-                        println("\n" + "---------------------------------------" + "\n")
+                        val teachers = scheduleRepository.getAllTeachers()
+                        Log.d("Schedule","Teachers: ${teachers}")
 
-                        val teacherName = "Ринчино"
-                        Log.d("Schedule","parsing test for ${teacherName}:")
-                        result = scheduleRepository.filterByTeacher(teacherName)
-                        result.forEach { item ->
-                            Log.d("Schedule","${item.day}, ${item.weekType} | Пара ${item.lessonNum}: ${item.subject}, ${item.group} подгруппа ${item.subgroup}, ${item.rooms}")
+                        val repository = (requireActivity().application as UniFocusApp).repository
+                        val factory = UniFocusViewModelFactory(repository)
+                        viewModel = ViewModelProvider(this, factory)[UniFocusViewModel::class.java]
+
+                        teachers.forEach { teacher ->
+                            val teacherTasks = scheduleRepository.filterByTeacher(teacher)
+                            teacherTasks.forEach {
+                                scheduleRepository.parseScheduleItemToTask(it, viewModel, teacher)
+                            }
+
+                            Log.d("teacherTasks","teacherTasks: ${teacherTasks}")
+                            viewModel.createSchedule(teacher)
                         }
 
                         it.isEnabled = true

@@ -45,6 +45,7 @@ class CreateScheduleDialogue : DialogFragment() {
 
         adapter = ScheduleAdapter { schedule ->
             viewModel.selectSchedule(schedule.groupName, true)
+            viewModel.selectScheduleTasks(schedule, true)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

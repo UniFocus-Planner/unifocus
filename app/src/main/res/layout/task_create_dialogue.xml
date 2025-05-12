@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_semibold"
-            android:text="Task"
+            android:text="Создать задачу"
             android:textColor="#005EB8"
             android:textSize="26sp"
             android:textStyle="bold"
@@ -48,7 +48,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/rounded_white_background"
         android:fontFamily="@font/montserrat"
-        android:hint="Name"
+        android:hint="Имя"
         android:padding="12dp"
         android:textColor="@color/blue_main"
         android:textColorHint="@color/blue_main" />
@@ -61,7 +61,20 @@
         android:background="@drawable/rounded_white_background"
         android:fontFamily="@font/montserrat"
         android:gravity="top"
-        android:hint="Description"
+        android:hint="Описание"
+        android:padding="12dp"
+        android:textColor="@color/blue_main"
+        android:textColorHint="@color/blue_main" />
+
+    <EditText
+        android:id="@+id/teacher_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_white_background"
+        android:fontFamily="@font/montserrat"
+        android:gravity="top"
+        android:hint="Преподаватель"
         android:padding="12dp"
         android:textColor="@color/blue_main"
         android:textColorHint="@color/blue_main" />
@@ -77,7 +90,7 @@
         android:fontFamily="@font/montserrat"
         android:gravity="center_vertical"
         android:padding="12dp"
-        android:text="Add deadline"
+        android:text="Дедлайн"
         android:textColor="@color/blue_main" />
 
     <EditText
@@ -88,7 +101,7 @@
         android:background="@drawable/rounded_white_background"
         android:fontFamily="@font/montserrat"
         android:gravity="top"
-        android:hint="Notes"
+        android:hint="Примечания"
         android:padding="12dp"
         android:textColor="@color/blue_main"
         android:textColorHint="@color/blue_main" />
