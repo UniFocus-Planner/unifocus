@@ -67,7 +67,7 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
         taskDao.updateSelected(name, value)
     }
 
-    suspend fun selectTasksBySchedule(schedule:String) : List<Task> {
+    suspend fun getTasksBySchedule(schedule:String) : List<Task> {
         return taskDao.getTasksBySchedule(schedule)
     }
 }

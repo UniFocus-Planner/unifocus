@@ -5,7 +5,6 @@ import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.temporal.TemporalAdjusters
 
 class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleItem>>) {
@@ -17,6 +16,16 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
             scheduleItem.teachers.forEach { teacher ->
                 if(!result.contains(teacher)) result.add(teacher)
             }
+        }
+
+        return result
+    }
+
+    fun getAllGroups() : List<String> {
+        val result = mutableListOf<String>()
+
+        getAllScheduleItems().forEach { scheduleItem ->
+            if(!result.contains(scheduleItem.group)) result.add(scheduleItem.group)
         }
 
         return result
@@ -135,18 +144,19 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
     }
 
     fun parseScheduleItemToTask(scheduleItem: ScheduleItem, viewModel: UniFocusViewModel, schedule: String): Task {
-        val startDate = LocalDate.of(2025, 2, 5) // 5 февраля 2025
+        val startDate = LocalDate.of(2025, 2, 5)
         val dayOfWeek = parseDayOfWeek(scheduleItem.day)
 
         val lessonDates = calculateLessonDates(startDate, dayOfWeek, scheduleItem.weekType)
         val firstLessonDate = lessonDates.firstOrNull()
+
 
         val deadline = firstLessonDate?.atTime(9, 0)
 
         var task = viewModel.createTask(
             name = scheduleItem.subject,
             description = "",
-            deadline = LocalDateTime.now(),
+            deadline = deadline,
             taskType = TaskType.CLASS,
             room = scheduleItem.rooms.joinToString(", "),
             teacher = scheduleItem.teachers.joinToString(", "),

@@ -123,12 +123,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
 
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 
-                        scheduleRepository.getAllScheduleItems().forEach {
-                            it.print()
-                        }
-
                         val teachers = scheduleRepository.getAllTeachers()
-                        Log.d("Schedule","Teachers: ${teachers}")
 
                         val repository = (requireActivity().application as UniFocusApp).repository
                         val factory = UniFocusViewModelFactory(repository)
@@ -140,8 +135,19 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                                 scheduleRepository.parseScheduleItemToTask(it, viewModel, teacher)
                             }
 
-                            Log.d("teacherTasks","teacherTasks: ${teacherTasks}")
                             viewModel.createSchedule(teacher)
+                        }
+
+                        val groups = scheduleRepository.getAllGroups()
+                        groups.forEach { group ->
+                            Log.d("PRINT GROUP", group)
+                            var groupTasks = scheduleRepository.filterByGroup(group)
+                            groupTasks.forEach {
+                                it.print()
+                                scheduleRepository.parseScheduleItemToTask(it, viewModel, group)
+                            }
+
+                            viewModel.createSchedule(group)
                         }
 
                         it.isEnabled = true

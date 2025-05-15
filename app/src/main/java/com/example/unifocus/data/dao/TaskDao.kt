@@ -30,9 +30,6 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE id = :id LIMIT 1")
     suspend fun getTasksById(id: Int): Task?
 
-    @Query("SELECT * FROM tasks WHERE schedule = :groupName")
-    suspend fun getTasksBySchedule(groupName: String): List<Task>
-
     @Query("DELETE FROM tasks")
     suspend fun deleteAll()
 
@@ -44,6 +41,9 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks WHERE deadline = :date OR (:date IS NULL AND deadline IS NULL)")
     fun getTasksByDate(date: LocalDateTime?): Flow<List<Task>>
+
+    @Query("SELECT * FROM tasks WHERE schedule = :schedule")
+    fun getTasksBySchedule(schedule: String): List<Task>
 
     @Query("""
         SELECT * FROM tasks 

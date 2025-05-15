@@ -23,7 +23,6 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
     val schedules: LiveData<List<Schedule>> = repository.schedules.asLiveData()
     val selectedSchedules: LiveData<List<Schedule>> = repository.selectedSchedules.asLiveData()
     val todaySelectedTasks: LiveData<List<Task>> = repository.todayTasks.asLiveData()
-    val selectedTasks: LiveData<List<Task>> = repository.selectedTasks.asLiveData()
 
     fun toggleTaskSelection(taskId: Int, selected: Boolean) {
         viewModelScope.launch {
@@ -103,6 +102,15 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         }
     }
 
+    fun getTaskBySchedule(schedule: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            var tasks = repository.getTasksBySchedule(schedule)
+            tasks.forEach {
+                Log.d("GET TASKS", it.toString())
+            }
+        }
+    }
+
     fun createSchedule(
         name: String,
     ) {
@@ -123,9 +131,11 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
 
     fun selectScheduleTasks(schedule: Schedule, value:Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("SelectScheduleTasks", schedule.tasks.toString())
 
-            repository.selectTasks()
+            var tasks = repository.getTasksBySchedule(schedule.groupName)
+            tasks.forEach {
+                repository.updateTaskSelection(it.id, value)
+            }
             schedule.tasks.forEach {
                 repository.updateTaskSelection(it.id, value)
             }

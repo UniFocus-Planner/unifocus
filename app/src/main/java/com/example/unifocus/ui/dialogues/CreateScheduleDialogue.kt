@@ -45,6 +45,7 @@ class CreateScheduleDialogue : DialogFragment() {
 
         adapter = ScheduleAdapter { schedule ->
             viewModel.selectSchedule(schedule.groupName, true)
+            viewModel.getTaskBySchedule(schedule.groupName)
             viewModel.selectScheduleTasks(schedule, true)
         }
 
