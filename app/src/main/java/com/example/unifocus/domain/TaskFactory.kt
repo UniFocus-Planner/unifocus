@@ -14,7 +14,7 @@ class TaskFactory {
             room: String? = null,
             group: String? = null,
             teacher: String? = null,
-            schedule: List<String>? = null,
+            schedule: List<String> = mutableListOf(),
             number: Int = 0,
             selected: Boolean = false,
             weekType: ScheduleItem.WeekType? = null,
@@ -31,8 +31,8 @@ class TaskFactory {
                 weekType = weekType,
                 number = number,
                 selected = selected,
-                schedule1 = schedule?.get(0),
-                schedule2 = schedule?.get(1),
+                schedule1 = if(schedule.isNotEmpty()) schedule.get(0) else "",
+                schedule2 = if(schedule.isNotEmpty()) schedule.get(1) else "",
                 additionalInformation = additionalInformation
             )
         }
