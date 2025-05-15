@@ -1,5 +1,10 @@
 package com.example.unifocus.ui.viewmodels
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -9,13 +14,14 @@ import com.example.unifocus.data.models.schedule.Schedule
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.data.repository.UniFocusRepository
+import com.example.unifocus.domain.NotificationReceiver
 import com.example.unifocus.domain.ScheduleFactory
 import com.example.unifocus.domain.ScheduleItem
 import com.example.unifocus.domain.TaskFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
+import java.util.Calendar
 
 class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel() {
 
@@ -135,6 +141,50 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteSchedule(name)
+        }
+    }
+
+    fun scheduleNotification(
+        context: Context?,
+        targetTime: Calendar?,
+        notificationId: Int,
+        channelId: String,
+        title: String,
+        text: String
+    ) {
+        if (targetTime == null) {
+            return
+        }
+
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("notificationId", notificationId)
+            putExtra("channelId", channelId)
+            putExtra("title", title)
+            putExtra("text", text)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Android 6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                targetTime.timeInMillis,
+                pendingIntent
+            )
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                targetTime.timeInMillis,
+                pendingIntent
+            )
         }
     }
 }

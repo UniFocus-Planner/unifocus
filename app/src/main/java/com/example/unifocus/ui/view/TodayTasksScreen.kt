@@ -1,7 +1,6 @@
 package com.example.unifocus.ui.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
 import com.example.unifocus.UniFocusApp
 import com.example.unifocus.data.models.task.Task
-import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.ui.adapter.TaskAdapter
 import com.example.unifocus.ui.decorators.VerticalSpaceItemDecoration
-import com.example.unifocus.ui.dialogues.CreateScheduleDialogue
 import com.example.unifocus.ui.dialogues.CreateTaskDialog
 import com.example.unifocus.ui.dialogues.EditTaskDialogFragment
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Locale
 
 class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
     private lateinit var recyclerView: RecyclerView
@@ -76,7 +76,17 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
         dialog.show(parentFragmentManager, "EditTaskDialog")
     }
 
-    override fun onTaskCreated(task: Task) {
+    override fun onTaskCreated(task: Task, selectedNotificationTime: Calendar?) {
         viewModel.addTask(task)
+
+        val notificationID = task.id
+        val channelID = "Unifocus"
+        val title = "Уведомление о задаче:"
+        val text = "${task.name}\nДедлайн: ${
+                task.deadline?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.getDefault()))
+                    ?: "не указан"
+            }"
+
+        viewModel.scheduleNotification(context, selectedNotificationTime, notificationID, channelID, title, text)
     }
 }

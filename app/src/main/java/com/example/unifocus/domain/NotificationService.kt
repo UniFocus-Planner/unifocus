@@ -22,12 +22,13 @@ class NotificationService {
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(notification_title)
             .setContentText(notification_text)
+            .setStyle(NotificationCompat.BigTextStyle())
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
-            .setDefaults(NotificationCompat.DEFAULT_ALL) // Sound, vibro, popup
-            .setSound(soundUri) // Sound
-            .setContentIntent(pendingIntent) // Open app by tapping on the popup
+            .setDefaults(NotificationCompat.DEFAULT_ALL) // Звук и эффекты
+            .setSound(soundUri) // Звук
+            .setContentIntent(pendingIntent) // Открыть приложение по нажатию на уведомление
 
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(NOTIFICATION_ID, builder.build())

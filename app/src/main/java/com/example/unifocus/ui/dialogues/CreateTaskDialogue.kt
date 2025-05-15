@@ -16,15 +16,18 @@ import java.util.Calendar
 import java.util.Locale
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 
 class CreateTaskDialog : BottomSheetDialogFragment() {
     private var listener: OnTaskCreatedListener? = null
     private var selectedDeadline: LocalDateTime? = null
+    private var selectedNotificationTime: Calendar? = null
 
     interface OnTaskCreatedListener {
-        fun onTaskCreated(task: Task)
+        fun onTaskCreated(task: Task, selectedNotificationTime: Calendar?)
     }
 
     fun setOnTaskCreatedListener(listener: OnTaskCreatedListener) {
@@ -47,6 +50,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
         val additionalInformation = view.findViewById<TextView>(R.id.notes_task)
         val createButton = view.findViewById<Button>(R.id.button_task)
         val deadlineText = view.findViewById<TextView>(R.id.deadlineText)
+        val notificationText = view.findViewById<TextView>(R.id.notificationText)
         val teacherText = view.findViewById<TextView>(R.id.teacher_task)
 
         selectedDeadline?.let {
@@ -54,7 +58,15 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
         }
 
         deadlineText.setOnClickListener {
-            showDateTimePicker(deadlineText)
+            showDateTimePickerForDeadline(deadlineText)
+        }
+
+        selectedNotificationTime?.let {
+            notificationText.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(it.time)
+        }
+
+        notificationText.setOnClickListener {
+            showDateTimePickerForNotification(notificationText)
         }
 
         createButton.setOnClickListener {
@@ -71,7 +83,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
                     schedule = listOf(),
                     additionalInformation = additionalInformation.text.toString()
                 )
-                listener?.onTaskCreated(task)
+                listener?.onTaskCreated(task, selectedNotificationTime)
                 dismiss()
             } else {
                 nameInput.error = "Введите название задачи"
@@ -84,7 +96,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
         }
     }
 
-    private fun showDateTimePicker(deadlineText: TextView) {
+    private fun showDateTimePickerForDeadline(deadlineText: TextView) {
         val calendar = Calendar.getInstance()
 
         selectedDeadline?.let {
@@ -112,6 +124,38 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
                         deadlineText.text = selectedDeadline?.format(
                             DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.getDefault())
                         )
+                    },
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    true
+                ).show()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
+    private fun showDateTimePickerForNotification(notificationText: TextView) {
+        val calendar = selectedNotificationTime ?: Calendar.getInstance()
+
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                TimePickerDialog(
+                    requireContext(),
+                    { _, hour, minute ->
+                        selectedNotificationTime = Calendar.getInstance().apply {
+                            set(Calendar.YEAR, year)
+                            set(Calendar.MONTH, month)
+                            set(Calendar.DAY_OF_MONTH, day)
+                            set(Calendar.HOUR_OF_DAY, hour)
+                            set(Calendar.MINUTE, minute)
+                            set(Calendar.SECOND, 0)
+                        }
+
+                        notificationText.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+                            .format(selectedNotificationTime?.time ?: Date())
                     },
                     calendar.get(Calendar.HOUR_OF_DAY),
                     calendar.get(Calendar.MINUTE),
