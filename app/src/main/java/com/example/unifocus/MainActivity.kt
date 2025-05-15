@@ -1,13 +1,25 @@
 package com.example.unifocus
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.media.AudioAttributes
+import android.media.RingtoneManager
+import android.os.Build
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.example.unifocus.domain.NotificationReceiver
 
 import com.example.unifocus.ui.view.ProfileScreen
 import com.example.unifocus.ui.view.ScheduleScreen
 import com.example.unifocus.ui.view.TodayTasksScreen
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var todayButton: ImageButton
@@ -54,17 +66,6 @@ class MainActivity : AppCompatActivity() {
         scheduleButton.isSelected = false
 
         selectedButton.isSelected = true
-    }
-
-    private val REQUEST_CODE_POST_NOTIFICATIONS = 1
-    private fun requestNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                REQUEST_CODE_POST_NOTIFICATIONS
-            )
-        }
     }
 
     fun CreateNotificationChannel(context: Context, channelId: String) {
