@@ -25,14 +25,16 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
         val result = mutableListOf<String>()
 
         getAllScheduleItems().forEach { scheduleItem ->
-            if(!result.contains(scheduleItem.group)) result.add(scheduleItem.group)
+            if (!result.contains(scheduleItem.group)) result.add(scheduleItem.group)
         }
 
         return result
     }
 
     fun getAllScheduleItems(): List<ScheduleItem> {
-        return parsedSchedules.flatMap { it.value }
+        return parsedSchedules.flatMap { it.value.asSequence() }
+            .filter { it.teachers.isNotEmpty() }
+            .filter { it.rooms.isNotEmpty() }
     }
 
     fun filterByGroup(groupName: String): List<ScheduleItem> {
@@ -143,30 +145,32 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
         return dates
     }
 
-    fun parseScheduleItemToTask(scheduleItem: ScheduleItem, viewModel: UniFocusViewModel, schedule: String): Task {
+    fun parseScheduleItemToTask(scheduleItem: ScheduleItem, viewModel: UniFocusViewModel, schedule: List<String>): List<Task> {
         val startDate = LocalDate.of(2025, 2, 5)
         val dayOfWeek = parseDayOfWeek(scheduleItem.day)
 
-        val lessonDates = calculateLessonDates(startDate, dayOfWeek, scheduleItem.weekType)
-        val firstLessonDate = lessonDates.firstOrNull()
-
-
-        val deadline = firstLessonDate?.atTime(9, 0)
-
-        var task = viewModel.createTask(
-            name = scheduleItem.subject,
-            description = "",
-            deadline = deadline,
-            taskType = TaskType.CLASS,
-            room = scheduleItem.rooms.joinToString(", "),
-            teacher = scheduleItem.teachers.joinToString(", "),
+        val lessonDates = calculateLessonDates(
+            startDate = startDate,
+            dayOfWeek = dayOfWeek,
             weekType = scheduleItem.weekType,
-            number = scheduleItem.lessonNum.toInt(),
-            schedule = schedule,
-            selected = false,
-            additionalInformation = "Группа: ${scheduleItem.group}, Подгруппа: ${scheduleItem.subgroup}"
+            totalWeeks = 16
         )
 
-        return task
+        return lessonDates.map { lessonDate ->
+            viewModel.createTask(
+                name = scheduleItem.subject,
+                description = "Пара ${scheduleItem.lessonNum}",
+                deadline = lessonDate.atTime(9, 0),
+                taskType = TaskType.CLASS,
+                room = scheduleItem.rooms.joinToString(", "),
+                teacher = scheduleItem.teachers.joinToString(", "),
+                weekType = scheduleItem.weekType,
+                number = scheduleItem.lessonNum.toInt(),
+                schedule = schedule,
+                group = scheduleItem.group,
+                selected = false,
+                additionalInformation = ""
+            )
+        }
     }
 }

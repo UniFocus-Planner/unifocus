@@ -9,10 +9,10 @@ import java.time.LocalDateTime
 @Dao
 interface TaskDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTask(task: Task)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTasks(tasks: List<Task>)
 
     @Delete
@@ -42,7 +42,7 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE deadline = :date OR (:date IS NULL AND deadline IS NULL)")
     fun getTasksByDate(date: LocalDateTime?): Flow<List<Task>>
 
-    @Query("SELECT * FROM tasks WHERE schedule = :schedule")
+    @Query("SELECT * FROM tasks WHERE schedule1 = :schedule OR schedule2 = :schedule")
     fun getTasksBySchedule(schedule: String): List<Task>
 
     @Query("""

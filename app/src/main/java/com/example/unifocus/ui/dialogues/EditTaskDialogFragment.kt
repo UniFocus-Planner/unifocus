@@ -81,7 +81,8 @@ class EditTaskDialogFragment : DialogFragment() {
                 selected = requireArguments().getBoolean("selected"),
                 weekType = (requireArguments().getSerializable("weekType") as? ScheduleItem.WeekType),
                 group = requireArguments().getString("group"),
-                schedule = requireArguments().getString("schedule"),
+                schedule1 = requireArguments().getString("schedule1"),
+                schedule2 = requireArguments().getString("schedule2"),
                 additionalInformation = notes.text.toString()
             )
             listener?.onTaskUpdated(updatedTask)
@@ -145,7 +146,8 @@ class EditTaskDialogFragment : DialogFragment() {
                 putSerializable("number", task.number)
                 putSerializable("group", task.group)
                 putSerializable("selected", task.selected)
-                putSerializable("schedule", task.schedule)
+                putSerializable("schedule1", task.schedule1)
+                putSerializable("schedule2", task.schedule2)
                 putString("additionalInformation", task.additionalInformation)
             }
             fragment.arguments = args

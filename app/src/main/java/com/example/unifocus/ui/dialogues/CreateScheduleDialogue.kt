@@ -1,6 +1,7 @@
 package com.example.unifocus.ui.dialogues
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,6 @@ class CreateScheduleDialogue : DialogFragment() {
 
         adapter = ScheduleAdapter { schedule ->
             viewModel.selectSchedule(schedule.groupName, true)
-            viewModel.getTaskBySchedule(schedule.groupName)
             viewModel.selectScheduleTasks(schedule, true)
         }
 

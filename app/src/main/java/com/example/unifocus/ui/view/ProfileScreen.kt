@@ -69,14 +69,14 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                 // скачивание и замена
                 Toast.makeText(requireContext(), "Обновление расписания...", Toast.LENGTH_LONG).show()
                 val tablesToDownload = listOf(
-                    Pair("schedule_gi.xls", "https://misis.ru/files/-/a939ace09ed30a192497ee99edbda4d0/gi_140425.xls"),
-                    Pair("schedule_ibmi.xls", "https://misis.ru/files/-/1f39a37915a1066752bf3e2221bf6d5a/ibmi_120325.xls"),
-                    Pair("schedule_eupp.xls", "https://misis.ru/files/-/a2f6b24a848d9f17b760cb941a475d4d/eupp_110425.xls"),
-                    Pair("schedule_ifki.xls", "https://misis.ru/files/-/1ca0c742e7813101075aaf5138db4dc6/ifki_120325.xls"),
+                    //Pair("schedule_gi.xls", "https://misis.ru/files/-/a939ace09ed30a192497ee99edbda4d0/gi_140425.xls"),
+                    //Pair("schedule_ibmi.xls", "https://misis.ru/files/-/1f39a37915a1066752bf3e2221bf6d5a/ibmi_120325.xls"),
+                    //Pair("schedule_eupp.xls", "https://misis.ru/files/-/a2f6b24a848d9f17b760cb941a475d4d/eupp_110425.xls"),
+                    //Pair("schedule_ifki.xls", "https://misis.ru/files/-/1ca0c742e7813101075aaf5138db4dc6/ifki_120325.xls"),
                     Pair("schedule_itkn.xls", "https://misis.ru/files/-/262aaeaf7b610a2c2ed0d5365596f5f6/itkn_120325.xls"),
-                    Pair("schedule_inm.xls", "https://misis.ru/files/-/66e305b5c5ecab6673843363f11803e4/inm-270325.xls"),
-                    Pair("schedule_ekoteh.xls", "https://misis.ru/files/-/d9001c62a2054961aa607c95f273f62a/ekoteh_120325.xls"),
-                    Pair("schedule_pish-mast.xls", "https://misis.ru/files/-/8b077073a7c38f58d737451e79eb5fbd/pish-mast_120325.xls"),
+                    //Pair("schedule_inm.xls", "https://misis.ru/files/-/66e305b5c5ecab6673843363f11803e4/inm-270325.xls"),
+                    //Pair("schedule_ekoteh.xls", "https://misis.ru/files/-/d9001c62a2054961aa607c95f273f62a/ekoteh_120325.xls"),
+                    //Pair("schedule_pish-mast.xls", "https://misis.ru/files/-/8b077073a7c38f58d737451e79eb5fbd/pish-mast_120325.xls"),
 
                     // таблица с нестандартной структурой и форматом, могут быть ошибки!
                     //Pair("schedule_ibo.xls", "https://misis.ru/files/-/dbba1aeada7152fef480fd72714b85b2/ibo_150425.xlsx")
@@ -130,23 +130,25 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                         viewModel = ViewModelProvider(this, factory)[UniFocusViewModel::class.java]
 
                         teachers.forEach { teacher ->
-                            val teacherTasks = scheduleRepository.filterByTeacher(teacher)
-                            teacherTasks.forEach {
-                                scheduleRepository.parseScheduleItemToTask(it, viewModel, teacher)
-                            }
+//                            val teacherTasks = scheduleRepository.filterByTeacher(teacher)
+//                            teacherTasks.forEach {
+//                                scheduleRepository.parseScheduleItemToTask(it, viewModel, listOf(teacher, it.group)).forEach {
+//                                    Log.d("Created tasks", it.toString())
+//                                }
+//                            }
 
                             viewModel.createSchedule(teacher)
                         }
 
                         val groups = scheduleRepository.getAllGroups()
                         groups.forEach { group ->
-                            Log.d("PRINT GROUP", group)
-                            var groupTasks = scheduleRepository.filterByGroup(group)
-                            groupTasks.forEach {
-                                it.print()
-                                scheduleRepository.parseScheduleItemToTask(it, viewModel, group)
+                            val groupTask = scheduleRepository.filterByGroup(group)
+                            groupTask.forEach {
+                                scheduleRepository.parseScheduleItemToTask(it, viewModel, listOf(it.teachers.first(), group)).forEach {
+                                    Log.d("Created tasks", it.toString())
+                                }
                             }
-
+                            Log.d("PRINT GROUP", group)
                             viewModel.createSchedule(group)
                         }
 

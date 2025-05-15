@@ -39,7 +39,8 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         teacher: String? = null,
         number: Int = 0,
         selected: Boolean = false,
-        schedule: String = "",
+        schedule: List<String> = mutableListOf(),
+        group: String = "",
         weekType: ScheduleItem.WeekType? = null,
         additionalInformation: String? = null
     ): Task {
@@ -53,6 +54,7 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
             number = number,
             selected = selected,
             schedule = schedule,
+            group = group,
             additionalInformation = additionalInformation
         )
         addTask(task)
@@ -96,21 +98,6 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         }
     }
 
-    suspend fun getAllTasks(): List<Task> {
-        return withContext(Dispatchers.IO) {
-            repository.getAllTasks()
-        }
-    }
-
-    fun getTaskBySchedule(schedule: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            var tasks = repository.getTasksBySchedule(schedule)
-            tasks.forEach {
-                Log.d("GET TASKS", it.toString())
-            }
-        }
-    }
-
     fun createSchedule(
         name: String,
     ) {
@@ -132,11 +119,12 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
     fun selectScheduleTasks(schedule: Schedule, value:Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
 
-            var tasks = repository.getTasksBySchedule(schedule.groupName)
+            Log.d("SELECTING", "SELECTING")
+            val tasks = repository.getTasksBySchedule(schedule.groupName)
             tasks.forEach {
-                repository.updateTaskSelection(it.id, value)
+                Log.d("TASK", tasks.toString())
             }
-            schedule.tasks.forEach {
+            tasks.forEach {
                 repository.updateTaskSelection(it.id, value)
             }
         }

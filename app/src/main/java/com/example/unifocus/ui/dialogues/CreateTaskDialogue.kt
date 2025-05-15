@@ -68,7 +68,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
                     selected = true,
                     teacher = teacherText.text.toString(),
                     group = "",
-                    schedule = "",
+                    schedule = listOf(),
                     additionalInformation = additionalInformation.text.toString()
                 )
                 listener?.onTaskCreated(task)
