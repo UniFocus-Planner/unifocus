@@ -65,6 +65,9 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE selected = :value")
     fun getSelectedTasks(value:Boolean = true): Flow<List<Task>>
 
+    @Insert
+    suspend fun insertAndGetId(task: Task): Long
+
     /*
     *
     * Здесь должен быть SQL-запрос на получение списка задач по выбранной дате

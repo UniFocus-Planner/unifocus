@@ -1,5 +1,7 @@
 package com.example.unifocus.ui.dialogues
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +14,12 @@ import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.domain.TaskFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.util.Calendar
-import java.util.Locale
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 
 class CreateTaskDialog : BottomSheetDialogFragment() {
     private var listener: OnTaskCreatedListener? = null
@@ -27,7 +27,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
     private var selectedNotificationTime: Calendar? = null
 
     interface OnTaskCreatedListener {
-        fun onTaskCreated(task: Task, selectedNotificationTime: Calendar?)
+        fun onTaskCreated(task: Task)
     }
 
     fun setOnTaskCreatedListener(listener: OnTaskCreatedListener) {
@@ -76,6 +76,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
                     name = name,
                     description = descInput.text.toString(),
                     deadline = selectedDeadline,
+                    notificationTime = selectedNotificationTime,
                     taskType = TaskType.CLASS,
                     selected = true,
                     teacher = teacherText.text.toString(),
@@ -83,7 +84,7 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
                     schedule = listOf(),
                     additionalInformation = additionalInformation.text.toString()
                 )
-                listener?.onTaskCreated(task, selectedNotificationTime)
+                listener?.onTaskCreated(task)
                 dismiss()
             } else {
                 nameInput.error = "Введите название задачи"

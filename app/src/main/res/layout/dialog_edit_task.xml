@@ -94,6 +94,21 @@
         android:text="Дедлайн"
         android:textColor="@color/blue_main" />
 
+    <TextView
+        android:id="@+id/notificationText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/rounded_white_background"
+        android:drawableStart="@drawable/ic_notification"
+        android:drawableTint="@color/blue_main"
+        android:drawablePadding="9dp"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="Уведомление"
+        android:textColor="@color/blue_main" />
+
     <EditText
         android:id="@+id/notes_task"
         android:layout_width="match_parent"
@@ -117,7 +132,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button_background"
         android:fontFamily="@font/montserrat_semibold"
-        android:text="Отредактировать"
+        android:text="Сохранить"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
 		

@@ -16,12 +16,17 @@ import java.util.Calendar
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import com.example.unifocus.domain.ScheduleItem
+import com.example.unifocus.domain.TaskFactory
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 
 class EditTaskDialogFragment : DialogFragment() {
     private var selectedDeadline: LocalDateTime? = null
+    private var selectedNotificationTime: Calendar? = null
 
     interface OnTaskUpdatedListener {
         fun onTaskUpdated(task: Task)
@@ -56,6 +61,7 @@ class EditTaskDialogFragment : DialogFragment() {
         val saveButton = view.findViewById<Button>(R.id.button_task)
 
         val deadlineText = view.findViewById<TextView>(R.id.deadlineText)
+        val notificationText = view.findViewById<TextView>(R.id.notificationText)
 
         // Получаем deadline как LocalDateTime из аргументов
         selectedDeadline = arguments?.getSerializable("deadline") as? LocalDateTime
@@ -65,28 +71,45 @@ class EditTaskDialogFragment : DialogFragment() {
         }
 
         deadlineText.setOnClickListener {
-            showDateTimePicker(deadlineText)
+            showDateTimePickerForDeadline(deadlineText)
+        }
+
+        // Для notificationTime
+        selectedNotificationTime = arguments?.getSerializable("notificationTime") as? Calendar
+
+        selectedNotificationTime?.let {
+            notificationText.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(it.time)
+        }
+
+        notificationText.setOnClickListener {
+            showDateTimePickerForNotification(notificationText)
         }
 
         saveButton.setOnClickListener {
-            val updatedTask = Task(
-                id = taskId,
-                name = nameEditText.text.toString(),
-                description = descEditText.text.toString(),
-                deadline = selectedDeadline,
-                taskType = TaskType.values()[typeOrdinal],
-                room = requireArguments().getString("room"),
-                number = requireArguments().getInt("number"),
-                teacher = teacher.text.toString(),
-                selected = requireArguments().getBoolean("selected"),
-                weekType = (requireArguments().getSerializable("weekType") as? ScheduleItem.WeekType),
-                group = requireArguments().getString("group"),
-                schedule1 = requireArguments().getString("schedule1"),
-                schedule2 = requireArguments().getString("schedule2"),
-                additionalInformation = notes.text.toString()
-            )
-            listener?.onTaskUpdated(updatedTask)
-            dismiss()
+            val taskNewName = nameEditText.text.toString().trim()
+            if (taskNewName.isNotEmpty()) {
+                val updatedTask = Task(
+                    id = taskId,
+                    name = taskNewName,
+                    description = descEditText.text.toString(),
+                    deadline = selectedDeadline,
+                    notificationTime = selectedNotificationTime,
+                    taskType = TaskType.values()[typeOrdinal],
+                    room = requireArguments().getString("room"),
+                    number = requireArguments().getInt("number"),
+                    teacher = teacher.text.toString(),
+                    selected = requireArguments().getBoolean("selected"),
+                    weekType = (requireArguments().getSerializable("weekType") as? ScheduleItem.WeekType),
+                    group = requireArguments().getString("group"),
+                    schedule1 = requireArguments().getString("schedule1"),
+                    schedule2 = requireArguments().getString("schedule2"),
+                    additionalInformation = notes.text.toString()
+                )
+                listener?.onTaskUpdated(updatedTask)
+                dismiss()
+            } else {
+                nameEditText.error = "Введите название задачи"
+            }
         }
 
         val closeButton = view.findViewById<AppCompatImageButton>(R.id.close_button_task_edit)
@@ -99,7 +122,7 @@ class EditTaskDialogFragment : DialogFragment() {
             .create()
     }
 
-    private fun showDateTimePicker(deadlineText: TextView) {
+    private fun showDateTimePickerForDeadline(deadlineText: TextView) {
         val calendar = Calendar.getInstance()
         selectedDeadline?.let {
             calendar.set(Calendar.YEAR, it.year)
@@ -131,6 +154,38 @@ class EditTaskDialogFragment : DialogFragment() {
         ).show()
     }
 
+    private fun showDateTimePickerForNotification(notificationText: TextView) {
+        val calendar = selectedNotificationTime ?: Calendar.getInstance()
+
+        DatePickerDialog(
+            requireContext(),
+            { _, year, month, day ->
+                TimePickerDialog(
+                    requireContext(),
+                    { _, hour, minute ->
+                        selectedNotificationTime = Calendar.getInstance().apply {
+                            set(Calendar.YEAR, year)
+                            set(Calendar.MONTH, month)
+                            set(Calendar.DAY_OF_MONTH, day)
+                            set(Calendar.HOUR_OF_DAY, hour)
+                            set(Calendar.MINUTE, minute)
+                            set(Calendar.SECOND, 0)
+                        }
+
+                        notificationText.text = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+                            .format(selectedNotificationTime?.time ?: Date())
+                    },
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    true
+                ).show()
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        ).show()
+    }
+
     companion object {
         fun newInstance(task: Task): EditTaskDialogFragment {
             val fragment = EditTaskDialogFragment()
@@ -140,6 +195,7 @@ class EditTaskDialogFragment : DialogFragment() {
                 putString("description", task.description)
                 putInt("taskTypeOrdinal", task.taskType.ordinal)
                 putSerializable("deadline", task.deadline)
+                putSerializable("notificationTime", task.notificationTime)
                 putString("room", task.room)
                 putString("teacher", task.teacher)
                 putSerializable("weekType", task.weekType)

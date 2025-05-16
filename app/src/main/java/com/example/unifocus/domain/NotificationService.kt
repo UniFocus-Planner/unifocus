@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.unifocus.MainActivity
@@ -32,5 +33,6 @@ class NotificationService {
 
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(NOTIFICATION_ID, builder.build())
+        Log.d("Incoming Notification", "Sending notification with ID: ${NOTIFICATION_ID}")
     }
 }

@@ -2,6 +2,7 @@ package com.example.unifocus.data.models.task
 import androidx.room.*
 import com.example.unifocus.domain.ScheduleItem
 import java.time.LocalDateTime
+import java.util.Calendar
 
 @Entity(tableName = "tasks")
 data class Task(
@@ -9,6 +10,7 @@ data class Task(
     val name: String,
     val description: String?,
     val deadline: LocalDateTime?,
+    val notificationTime: Calendar?,
     val taskType: TaskType,
     val room: String?,
     val group: String?,
