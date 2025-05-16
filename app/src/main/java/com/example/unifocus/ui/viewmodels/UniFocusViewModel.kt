@@ -144,6 +144,10 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         }
     }
 
+    suspend fun getTotalTaskCount(): Int {
+        return repository.getTotalTaskCount()
+    }
+
     fun scheduleNotification(
         context: Context?,
         targetTime: Calendar?,

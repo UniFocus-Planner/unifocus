@@ -1,12 +1,14 @@
 package com.example.unifocus.ui.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
 import com.example.unifocus.UniFocusApp
@@ -17,6 +19,8 @@ import com.example.unifocus.ui.dialogues.CreateTaskDialog
 import com.example.unifocus.ui.dialogues.EditTaskDialogFragment
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
@@ -79,14 +83,21 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
     override fun onTaskCreated(task: Task, selectedNotificationTime: Calendar?) {
         viewModel.addTask(task)
 
-        val notificationID = task.id
-        val channelID = "Unifocus"
-        val title = "Уведомление о задаче:"
-        val text = "${task.name}\nДедлайн: ${
+        scheduleTaskNotification(task, selectedNotificationTime)
+    }
+
+    fun scheduleTaskNotification(task: Task, selectedNotificationTime: Calendar?) {
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            val notificationID = viewModel.getTotalTaskCount() + 1
+            Log.d("Notif ID check", "NOTIFICATION ID: ${notificationID}")
+            val channelID = "Unifocus"
+            val title = "Уведомление о задаче:"
+            val text = "${task.name}\nДедлайн: ${
                 task.deadline?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.getDefault()))
                     ?: "не указан"
             }"
 
-        viewModel.scheduleNotification(context, selectedNotificationTime, notificationID, channelID, title, text)
+            viewModel.scheduleNotification(context, selectedNotificationTime, notificationID, channelID, title, text)
+        }
     }
 }

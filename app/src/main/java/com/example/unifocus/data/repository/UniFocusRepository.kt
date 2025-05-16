@@ -43,6 +43,8 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
 
     suspend fun getAllTasks(): List<Task> = taskDao.getAllTasks()
 
+    suspend fun getTotalTaskCount(): Int = taskDao.countAllTasks()
+
     suspend fun addSchedule(schedule: Schedule) {
         scheduleDao.insertSchedule(schedule)
     }
