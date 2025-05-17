@@ -1,6 +1,7 @@
 package com.example.unifocus.ui.dialogues
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,7 @@ class CreateScheduleDialogue : DialogFragment() {
 
         adapter = ScheduleAdapter { schedule ->
             viewModel.selectSchedule(schedule.groupName, true)
+            viewModel.selectScheduleTasks(schedule, true)
         }
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

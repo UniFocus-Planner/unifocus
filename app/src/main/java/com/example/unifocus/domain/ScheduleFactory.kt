@@ -5,7 +5,7 @@ import com.example.unifocus.data.models.schedule.Schedule
 class ScheduleFactory {
     companion object {
         fun createSchedule(
-            groupName: String
+            groupName: String,
         ): Schedule {
             return Schedule(groupName)
         }

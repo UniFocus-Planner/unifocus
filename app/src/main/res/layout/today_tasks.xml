@@ -19,12 +19,6 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/addTestTaskButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add test task" />
-
-    <Button
         android:id="@+id/add_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

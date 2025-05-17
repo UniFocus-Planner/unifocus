@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/task_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -46,16 +47,36 @@
                 android:textColor="@color/blue_main"
                 android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/taskDeadline"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/blue_main"
-                android:textSize="14sp"
-                android:drawableStart="@drawable/rounded_white_background"
-                android:drawableTint="@color/blue_main"
-                android:text="01.01.2024 12:00" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/taskTeacher"
+                    android:layout_width="208dp"
+                    android:layout_height="32dp"
+                    android:clickable="false"
+                    android:duplicateParentState="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:text="Преподаватель"
+                    android:textColor="@color/blue_main"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/taskGroup"
+                    android:layout_width="148dp"
+                    android:layout_height="32dp"
+                    android:clickable="false"
+                    android:duplicateParentState="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:text="Группа"
+                    android:textColor="@color/blue_main"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <ImageButton

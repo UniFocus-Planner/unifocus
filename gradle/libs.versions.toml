@@ -1,5 +1,5 @@
 [versions]
-agp = "8.10.0"
+agp = "8.8.0"
 compiler = "1.0.0"
 fragmentKtx = "1.8.6"
 kotlin = "2.0.0"
@@ -13,6 +13,8 @@ activityCompose = "1.10.0"
 composeBom = "2024.04.01"
 lifecycleRuntimeKtxVersion = "2.6.2"
 lifecycleViewmodelKtx = "2.6.2"
+poi = "5.2.3"
+poiOoxml = "5.2.3"
 roomCompiler = "1.0.0"
 roomGuava = "1.0.0"
 roomKtx = "1.0.0"
@@ -27,7 +29,6 @@ recyclerview = "1.4.0"
 constraintlayout = "2.2.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-protoliteWellKnownTypes = "18.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,7 +65,8 @@ androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview"
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
+poi = { module = "org.apache.poi:poi", version.ref = "poi" }
+poi-ooxml = { module = "com.github.SUPERCILEX.poi-android:poi-ooxml", version.ref = "poiOoxml" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
