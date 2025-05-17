@@ -4,14 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
-import com.example.unifocus.data.models.schedule.Schedule
 import com.example.unifocus.data.models.task.Task
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
+
 
 class TaskAdapter(
     private val onTaskClick: (Task) -> Unit
@@ -23,6 +25,7 @@ class TaskAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameView: TextView = itemView.findViewById(R.id.taskName)
         private val descView: TextView = itemView.findViewById(R.id.taskDesc)
+        private val deadlineView: TextView = itemView.findViewById(R.id.taskDeadline)
         private val editTask: ImageButton = itemView.findViewById(R.id.edit_button)
 
         fun bind(task: Task) {
@@ -32,6 +35,13 @@ class TaskAdapter(
             editTask.setOnClickListener {
                 onTaskClick(task)
             }
+
+            deadlineView.text = formatDeadline(task.deadline)
+        }
+
+        private fun formatDeadline(timestamp: Long?): String {
+            if (timestamp == null) return "Дедлайн не установлен"
+            return SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date(timestamp))
         }
     }
 

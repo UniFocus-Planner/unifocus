@@ -34,14 +34,12 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE taskType = :type")
     fun getTasksByType(type: String): Flow<List<Task>>
 
-    /*
-    *
-    * Здесь должен быть SQL-запрос на получение списка задач по выбранной дате
-    *
-    * Нужно заменить тип Long на DateTime
-    *
-    * @Query("SELECT * FROM tasks WHERE deadline = :date OR (:date IS NULL AND deadline IS NULL)")
-    * fun getTasksByDate(date: Long?): Flow<List<Task>>
-    *
-    * */
+    @Query("""
+        SELECT * FROM tasks 
+        WHERE 
+            (deadline BETWEEN :startOfDay AND :endOfDay) 
+            OR 
+            (:startOfDay IS NULL AND deadline IS NULL)
+    """)
+    fun getTasksByDate(startOfDay: Long?, endOfDay: Long?): Flow<List<Task>>
 }

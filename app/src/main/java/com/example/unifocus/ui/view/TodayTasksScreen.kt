@@ -14,7 +14,6 @@ import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.ui.adapter.TaskAdapter
 import com.example.unifocus.ui.decorators.VerticalSpaceItemDecoration
-import com.example.unifocus.ui.dialogues.CreateScheduleDialogue
 import com.example.unifocus.ui.dialogues.CreateTaskDialog
 import com.example.unifocus.ui.dialogues.EditTaskDialogFragment
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
