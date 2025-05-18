@@ -38,8 +38,8 @@
             android:layout_weight="1"
             android:backgroundTint="@color/blue_main"
             android:scaleType="fitCenter"
-            android:tint="@color/white"
-            app:srcCompat="@drawable/ic_calendar" />
+            app:srcCompat="@drawable/ic_calendar"
+            app:tint="@color/white" />
 
         <ImageButton
             android:id="@+id/today_button"
@@ -48,8 +48,8 @@
             android:layout_weight="1"
             android:backgroundTint="@color/blue_main"
             android:scaleType="fitCenter"
-            android:tint="@color/white"
-            app:srcCompat="@drawable/trophy" />
+            app:srcCompat="@drawable/trophy"
+            app:tint="@color/white" />
 
         <ImageButton
             android:id="@+id/profile_button"
@@ -58,8 +58,8 @@
             android:layout_weight="1"
             android:backgroundTint="@color/blue_main"
             android:scaleType="fitCenter"
-            android:tint="@color/white"
-            app:srcCompat="@drawable/ic_profile" />
+            app:srcCompat="@drawable/ic_profile"
+            app:tint="@color/white" />
 
         <View
             android:id="@+id/view3"

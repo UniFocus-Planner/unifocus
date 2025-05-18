@@ -7,6 +7,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.compose.ui.window.isPopupLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -44,6 +45,7 @@ class ScheduleAdapter(
         }
     }
 
+
     class ScheduleViewHolder(
         scheduleView: View,
         private val onDeleteClick: (Schedule) -> Unit
@@ -51,8 +53,16 @@ class ScheduleAdapter(
         private val nameView: TextView = scheduleView.findViewById(R.id.schedule_title)
         private val deleteButton: ImageButton = scheduleView.findViewById(R.id.schedule_delete_button)
 
-        fun bind(schedule: Schedule) {
+        fun bind(schedule: Schedule, isAddMode: Boolean) {
             nameView.text = schedule.groupName
+
+            if (isAddMode) {
+                deleteButton.setImageResource(android.R.drawable.ic_menu_add)
+                deleteButton.contentDescription = "Добавить"
+            } else {
+                deleteButton.setImageResource(android.R.drawable.ic_menu_delete)
+                deleteButton.contentDescription = "Удалить"
+            }
 
             deleteButton.setOnClickListener {
                 onDeleteClick(schedule)
@@ -66,7 +76,8 @@ class ScheduleAdapter(
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val isAddMode = originalList.isNotEmpty()
+        holder.bind(getItem(position), isAddMode)
     }
 
     class ScheduleDiffCallback : DiffUtil.ItemCallback<Schedule>() {

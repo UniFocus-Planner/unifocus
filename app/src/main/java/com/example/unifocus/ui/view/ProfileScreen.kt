@@ -1,6 +1,5 @@
 package com.example.unifocus.ui.view
 
-import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -10,12 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
 import com.example.unifocus.UniFocusApp
 import com.example.unifocus.data.models.task.Task
-import com.example.unifocus.domain.ScheduleFactory
 import com.example.unifocus.domain.ScheduleItem
 import com.example.unifocus.domain.ScheduleRepository
 import com.example.unifocus.domain.ScheduleTableDownloader

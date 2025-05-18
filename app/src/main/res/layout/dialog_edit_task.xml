@@ -36,10 +36,10 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Close"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:tint="@color/blue_main"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/blue_main" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <EditText

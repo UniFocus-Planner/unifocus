@@ -1,6 +1,8 @@
 package com.example.unifocus.ui.dialogues
 
+import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,14 +14,11 @@ import androidx.fragment.app.DialogFragment
 import com.example.unifocus.R
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
-import java.util.Calendar
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import com.example.unifocus.domain.ScheduleItem
-import com.example.unifocus.domain.TaskFactory
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
