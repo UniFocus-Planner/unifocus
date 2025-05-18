@@ -37,7 +37,14 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
         val repository = (requireActivity().application as UniFocusApp).repository
         val factory = UniFocusViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[UniFocusViewModel::class.java]
-        adapter = TaskAdapter {task -> showEditTaskDialog(task)}
+        adapter = TaskAdapter(
+            onDeleteClick = {
+                task -> viewModel.deleteTaskById(task.id)
+            },
+            onTaskClick = {
+                task -> showEditTaskDialog(task)
+            }
+        )
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(VerticalSpaceItemDecoration(16))

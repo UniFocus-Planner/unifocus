@@ -10,22 +10,25 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
-import com.example.unifocus.data.models.schedule.Schedule
 import com.example.unifocus.data.models.task.Task
 
 class TaskAdapter(
-    private val onTaskClick: (Task) -> Unit
+    private val onTaskClick: (Task) -> Unit,
+    private val onDeleteClick: (Task) -> Unit
 ) : ListAdapter<Task, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
     class TaskViewHolder(
         itemView: View,
-        private val onTaskClick: (Task) -> Unit
+        private val onTaskClick: (Task) -> Unit,
+        private val onDeleteClick: (Task) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameView: TextView = itemView.findViewById(R.id.taskName)
         private val descView: TextView = itemView.findViewById(R.id.taskDesc)
         private val teacherView: TextView = itemView.findViewById(R.id.taskTeacher)
         private val groupView: TextView = itemView.findViewById(R.id.taskGroup)
         private val editTask: ImageButton = itemView.findViewById(R.id.edit_button)
+        private val deleteTask: ImageButton = itemView.findViewById(R.id.deleteButton)
+        private val taskLayout: LinearLayout = itemView.findViewById(R.id.task_layout)
 
         fun bind(task: Task) {
             nameView.text = task.name
@@ -33,15 +36,19 @@ class TaskAdapter(
             teacherView.text = task.teacher ?: "—"
             groupView.text = task.group ?: "—"
 
-            editTask.setOnClickListener {
+            taskLayout.setOnClickListener {
                 onTaskClick(task)
+            }
+
+            deleteTask.setOnClickListener {
+                onDeleteClick(task)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
-        return TaskViewHolder(view, onTaskClick)
+        return TaskViewHolder(view, onTaskClick, onDeleteClick)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
