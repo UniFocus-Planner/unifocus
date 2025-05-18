@@ -11,15 +11,24 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
+import com.example.unifocus.data.database.Converters
+import com.example.unifocus.data.database.UniFocusDatabase
 import com.example.unifocus.data.models.calendar_day.CalendarDay
+import com.example.unifocus.data.repository.UniFocusRepository
 import com.example.unifocus.ui.adapter.CalendarAdapter
-import java.util.Calendar
+import com.example.unifocus.ui.adapter.TaskAdapter
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
+import kotlinx.coroutines.launch
 
 class ScheduleScreen : Fragment() {
     private lateinit var calendarGrid: RecyclerView
@@ -27,6 +36,10 @@ class ScheduleScreen : Fragment() {
     private lateinit var todayHeader: TextView
     private var currentCalendar: Calendar = Calendar.getInstance()
     private var isAnimating = false // Флаг для предотвращения множественных свайпов
+    private var selectedDate: Calendar = Calendar.getInstance() // Выбранная дата
+    private lateinit var repository: UniFocusRepository
+    private val days = mutableListOf<CalendarDay>() // Добавляем поле для хранения дней
+    private lateinit var tasksList: RecyclerView
 
     // Обработчик свайпов с nullable-параметрами
     private val gestureDetector by lazy {
@@ -57,15 +70,33 @@ class ScheduleScreen : Fragment() {
         calendarGrid = view.findViewById(R.id.calendar_grid)
         monthYearHeader = view.findViewById(R.id.month_year_header)
         todayHeader = view.findViewById(R.id.today_header)
+        tasksList = view.findViewById(R.id.tasks_list)
         return view
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        updateMonthHeader()
+        repository = UniFocusRepository(UniFocusDatabase.getDatabase(requireContext()))
+
+        // Инициализация адаптера задач
+        tasksList.layoutManager = LinearLayoutManager(requireContext())
+        tasksList.adapter = TaskAdapter { /* обработчик клика */ }
+
+        // Устанавливаем начальную дату и загружаем задачи
+        selectedDate = Calendar.getInstance() // Сегодняшняя дата
+        updateDateHeader()
+        loadTasksForSelectedDate()
+
+        updateMonthYearHeader()
         setupCalendar()
-        setTodayHeader()
+
+        calendarGrid.adapter = CalendarAdapter(days) { clickedDay ->
+            // Обработка клика по дню
+            selectedDate = clickedDay.date
+            updateDateHeader()
+            loadTasksForSelectedDate()
+        }
 
         // Обработка свайпов
         calendarGrid.setOnTouchListener { _, event ->
@@ -78,7 +109,7 @@ class ScheduleScreen : Fragment() {
         if (isAnimating) return
         startAnimation(R.anim.slide_in_left, R.anim.slide_out_right) {
             currentCalendar.add(Calendar.MONTH, -1)
-            updateMonthHeader()
+            updateMonthYearHeader()
             setupCalendar()
         }
     }
@@ -87,7 +118,7 @@ class ScheduleScreen : Fragment() {
         if (isAnimating) return
         startAnimation(R.anim.slide_in_right, R.anim.slide_out_left) {
             currentCalendar.add(Calendar.MONTH, 1)
-            updateMonthHeader()
+            updateMonthYearHeader()
             setupCalendar()
         }
     }
@@ -114,7 +145,7 @@ class ScheduleScreen : Fragment() {
         calendarGrid.startAnimation(exit)
     }
 
-    private fun updateMonthHeader() {
+    private fun updateMonthYearHeader() {
         val monthNames = arrayOf(
             "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
             "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
@@ -126,6 +157,9 @@ class ScheduleScreen : Fragment() {
         val tempCalendar = currentCalendar.clone() as Calendar
         val today = Calendar.getInstance()
 
+        // Очищаем предыдущие данные
+        days.clear()
+
         // Сброс на первый день текущего месяца
         tempCalendar.set(Calendar.DAY_OF_MONTH, 1)
         val firstDayOfWeek = tempCalendar.get(Calendar.DAY_OF_WEEK)
@@ -134,8 +168,6 @@ class ScheduleScreen : Fragment() {
         tempCalendar.add(Calendar.MONTH, -1)
         val daysInPrevMonth = tempCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         val daysBefore = (firstDayOfWeek - Calendar.MONDAY + 7) % 7
-
-        val days = mutableListOf<CalendarDay>()
 
         // Добавление дней предыдущего месяца
         for (i in daysInPrevMonth - daysBefore + 1..daysInPrevMonth) {
@@ -167,22 +199,62 @@ class ScheduleScreen : Fragment() {
             days.add(CalendarDay(i, false, false, date))
         }
 
+        // Обновление адаптера
+        calendarGrid.layoutManager = GridLayoutManager(requireContext(), 7)
         (calendarGrid.adapter as? CalendarAdapter)?.updateDays(days) ?: run {
-            calendarGrid.adapter = CalendarAdapter(days)
+            calendarGrid.adapter = CalendarAdapter(days) { clickedDay ->
+                selectedDate = clickedDay.date
+                updateDateHeader()
+                loadTasksForSelectedDate()
+            }
         }
 
-        calendarGrid.layoutManager = GridLayoutManager(requireContext(), 7)
+        // Загрузка задач
+        viewLifecycleOwner.lifecycleScope.launch {
+            val allTasks = repository.getAllTasks()
+            days.forEach { day ->
+                val hasTasks = allTasks.any { task ->
+                    task.deadline?.toLocalDate() == day.date.toLocalDateTime().toLocalDate()
+                }
+                day.hasTasks = hasTasks
+            }
+            calendarGrid.adapter?.notifyDataSetChanged()
+        }
     }
 
     // Определение и запись сегодняшней даты в TextView today_header
-    private fun setTodayHeader() {
-        // Получаем текущую дату
-        val calendar = Calendar.getInstance()
+    private fun updateDateHeader() {
+        val pattern = if (isToday(selectedDate)) "Сегодня: d MMMM yyyy"
+        else "Выбранная дата: d MMMM yyyy"
 
-        // Создаем форматтер с русской локалью
-        val dateFormat = SimpleDateFormat("d MMMM yyyy", Locale("ru"))
-
-        // Форматируем дату и устанавливаем текст
-        todayHeader.text = "Сегодня: ${dateFormat.format(calendar.time)}"
+        // Исправляем назначение текста в today_header
+        todayHeader.text = SimpleDateFormat(pattern, Locale("ru")).format(selectedDate.time)
     }
+
+    private fun loadTasksForSelectedDate() {
+        viewLifecycleOwner.lifecycleScope.launch { // Добавляем импорт для launch
+            val start = selectedDate.toLocalDateTime().withHour(0)
+            val end = selectedDate.toLocalDateTime().withHour(23).withMinute(59)
+
+            repository.getTodaySelectedTasks(
+                Converters().dateToTimestamp(start)!!,
+                Converters().dateToTimestamp(end)!!
+            ).collect { tasks -> // Коллектим Flow
+                (tasksList?.adapter as? TaskAdapter)?.submitList(tasks)
+            }
+        }
+    }
+
+    // Добавляем функцию в ScheduleScreen:
+    private fun isToday(calendar: Calendar): Boolean {
+        val today = Calendar.getInstance()
+        return calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
+                calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
+    }
+
+    // Расширение для конвертации Calendar в LocalDateTime
+    private fun Calendar.toLocalDateTime() = LocalDateTime.ofInstant(
+        this.time.toInstant(),
+        ZoneId.systemDefault()
+    )
 }
