@@ -11,7 +11,7 @@
         android:padding="16dp">
 
         <TextView
-            android:layout_width="379dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:fontFamily="@font/montserrat_semibold"
@@ -23,36 +23,40 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="18dp"
             android:layout_weight="1" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_marginBottom="6dp">
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="348dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/montserrat_semibold"
-                android:gravity="left"
                 android:text="@string/schedule"
                 android:textColor="#005DB7"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/schedule_add_button"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Добавить расписание"
                 android:src="@android:drawable/ic_menu_add"
-                android:tint="#005CB7" />
+                app:tint="#005CB7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

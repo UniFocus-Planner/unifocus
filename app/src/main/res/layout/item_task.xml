@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_toStartOf="@id/deleteButton"
+            android:layout_toStartOf="@id/edit_button"
             android:layout_alignParentStart="true">
 
             <TextView
@@ -75,13 +75,12 @@
                     android:text="Группа"
                     android:textColor="@color/blue_main"
                     android:textSize="14sp" />
-
             </LinearLayout>
 
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/deleteButton"
+            android:id="@+id/edit_button"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_alignBottom="@id/taskDesc"
@@ -89,24 +88,7 @@
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="1dp"
             android:background="#FFFFFF"
-            android:tint="@color/blue_main"
-            app:srcCompat="@android:drawable/ic_menu_delete" />
-
-        <ImageButton
-            android:id="@+id/edit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_below="@+id/deleteButton"
-            android:layout_alignBottom="@id/taskDesc"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="355dp"
-            android:layout_marginTop="22dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="-32dp"
-            android:background="#FFFFFF"
-            android:tint="@color/blue_main"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
-
+            app:srcCompat="@android:drawable/ic_menu_edit"
+            app:tint="@color/blue_main" />
     </RelativeLayout>
 </LinearLayout>
