@@ -3,6 +3,7 @@ package com.example.unifocus.domain
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import java.time.LocalDateTime
+import java.util.Calendar
 
 class TaskFactory {
     companion object {
@@ -10,6 +11,7 @@ class TaskFactory {
             name: String,
             description: String? = null,
             deadline: LocalDateTime? = null,
+            notificationTime: Calendar? = null,
             taskType: TaskType = TaskType.NONE,
             room: String? = null,
             group: String? = null,
@@ -24,6 +26,7 @@ class TaskFactory {
                 name = name,
                 description = description,
                 deadline = deadline,
+                notificationTime = notificationTime,
                 taskType = taskType,
                 room = room,
                 group = group,

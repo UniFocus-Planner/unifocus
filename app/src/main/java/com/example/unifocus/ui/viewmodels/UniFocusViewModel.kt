@@ -1,5 +1,10 @@
 package com.example.unifocus.ui.viewmodels
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -9,13 +14,14 @@ import com.example.unifocus.data.models.schedule.Schedule
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.data.repository.UniFocusRepository
+import com.example.unifocus.domain.NotificationReceiver
 import com.example.unifocus.domain.ScheduleFactory
 import com.example.unifocus.domain.ScheduleItem
 import com.example.unifocus.domain.TaskFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
+import java.util.Calendar
 
 class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel() {
 
@@ -34,6 +40,8 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         name: String,
         description: String? = null,
         deadline: LocalDateTime? = null,
+        notificationTime: Calendar? = null,
+        notificationId: Int? = null,
         taskType: TaskType = TaskType.NONE,
         room: String? = null,
         teacher: String? = null,
@@ -47,6 +55,7 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         val task = TaskFactory.createTask( name = name,
             description = description,
             deadline = deadline,
+            notificationTime = notificationTime,
             taskType = taskType,
             room = room,
             teacher = teacher,
@@ -68,8 +77,12 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         }
     }
 
+    suspend fun addTaskAndGetId(task: Task): Int {
+        return repository.addTaskAndGetId(task)
+    }
+
     fun updateTask(task: Task) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.updateTask(task)
         }
     }
@@ -137,4 +150,142 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
             repository.deleteSchedule(name)
         }
     }
+
+    fun getTotalTaskCount(): Int {
+        var count = 0
+        viewModelScope.launch(Dispatchers.IO) {
+            count = repository.getTotalTaskCount()
+        }
+        return count
+    }
+
+    suspend fun getAllTasks(): List<Task> {
+        return repository.getAllTasks()
+    }
+
+    fun logTaskInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val tasks = getAllTasks()
+            Log.d("Task", "TASKS:")
+            for(task in tasks) {
+                Log.d("Task", "${task.toString()}")
+            }
+        }
+    }
+
+    fun scheduleNotification(
+        context: Context?,
+        targetTime: Calendar?,
+        id: Int,
+        channelId: String,
+        title: String,
+        text: String
+    ) {
+        if (targetTime == null) {
+            return
+        }
+
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("notificationId", id)
+            putExtra("channelId", channelId)
+            putExtra("title", title)
+            putExtra("text", text)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            id,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // Android 6.0+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                targetTime.timeInMillis,
+                pendingIntent
+            )
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                targetTime.timeInMillis,
+                pendingIntent
+            )
+        }
+
+        Log.d("Notifications", "Scheduled notification with ID ${id} on ${targetTime.toString()}")
+    }
+
+    suspend fun deleteNotification(
+        context: Context?,
+        id: Int,
+        channelId: String,
+    ) {
+        if (context == null) return
+
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("notificationId", id)
+            putExtra("channelId", channelId)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            id,
+            intent,
+            PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        if (pendingIntent != null) {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.cancel(pendingIntent)
+            pendingIntent.cancel()
+
+            Log.d("Notifications", "Deleted notification with ID $id")
+        }
+    }
+
+    suspend fun rescheduleNotification(
+        context: Context?,
+        targetTime: Calendar?,
+        id: Int,
+        channelId: String,
+        title: String,
+        text: String
+    ) {
+        Log.d("Notifications", "Rescheduling notification with ID ${id}")
+
+        deleteNotification(context, id, channelId)
+        scheduleNotification(context, targetTime, id, channelId, title, text)
+    }
+
+    fun deleteObsoleteNotifications(context: Context?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val channelId = "Unifocus"
+            val tasks = getAllTasks()
+
+            if (tasks.isEmpty()) {
+                for (id in 1..9999) {
+                    deleteNotification(context, id, channelId)
+                }
+                return@launch
+            }
+
+            val validIdsWithNotification = tasks
+                .filter { it.notificationTime != null }
+                .map { it.id }
+                .toSet()
+
+            val maxId = validIdsWithNotification.maxOrNull() ?: 0
+            val allPossibleIds = (1..maxId).toSet()
+            val obsoleteIds = allPossibleIds - validIdsWithNotification
+
+            obsoleteIds.forEach { id ->
+                deleteNotification(context, id, channelId)
+            }
+        }
+    }
 }
+

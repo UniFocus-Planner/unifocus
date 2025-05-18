@@ -24,6 +24,9 @@ interface TaskDao {
     @Query("SELECT * FROM tasks")
     suspend fun getAllTasks(): List<Task>
 
+    @Query("SELECT COUNT(*) FROM tasks")
+    suspend fun countAllTasks(): Int
+
     @Query("SELECT * FROM tasks WHERE name = :name LIMIT 1")
     suspend fun getTasksByName(name: String): Task?
 
@@ -61,6 +64,9 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks WHERE selected = :value")
     fun getSelectedTasks(value:Boolean = true): Flow<List<Task>>
+
+    @Insert
+    suspend fun insertAndGetId(task: Task): Long
 
     /*
     *

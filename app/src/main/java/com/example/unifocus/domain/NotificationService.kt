@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.unifocus.MainActivity
@@ -22,14 +23,16 @@ class NotificationService {
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(notification_title)
             .setContentText(notification_text)
+            .setStyle(NotificationCompat.BigTextStyle())
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
-            .setDefaults(NotificationCompat.DEFAULT_ALL) // Sound, vibro, popup
-            .setSound(soundUri) // Sound
-            .setContentIntent(pendingIntent) // Open app by tapping on the popup
+            .setDefaults(NotificationCompat.DEFAULT_ALL) // Звук и эффекты
+            .setSound(soundUri) // Звук
+            .setContentIntent(pendingIntent) // Открыть приложение по нажатию на уведомление
 
         val notificationManager = NotificationManagerCompat.from(context)
         notificationManager.notify(NOTIFICATION_ID, builder.build())
+        Log.d("Incoming Notification", "Sending notification with ID: ${NOTIFICATION_ID}")
     }
 }

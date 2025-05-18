@@ -1,6 +1,5 @@
 package com.example.unifocus.data.repository
 
-import android.util.Log
 import com.example.unifocus.data.database.Converters
 import com.example.unifocus.data.database.UniFocusDatabase
 import com.example.unifocus.data.models.schedule.Schedule
@@ -25,6 +24,10 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
 
     suspend fun addTask(task: Task) = taskDao.insertTask(task)
 
+    suspend fun addTaskAndGetId(task: Task): Int {
+        return taskDao.insertAndGetId(task).toInt()
+    }
+
     suspend fun addTasks(tasks: List<Task>) = taskDao.insertTasks(tasks)
 
     suspend fun updateTask(task: Task) {
@@ -42,6 +45,8 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
     suspend fun deleteAllTasks() = taskDao.deleteAll()
 
     suspend fun getAllTasks(): List<Task> = taskDao.getAllTasks()
+
+    suspend fun getTotalTaskCount(): Int = taskDao.countAllTasks()
 
     suspend fun addSchedule(schedule: Schedule) {
         scheduleDao.insertSchedule(schedule)
