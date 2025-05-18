@@ -27,7 +27,7 @@ class TaskAdapter(
         private val teacherView: TextView = itemView.findViewById(R.id.taskTeacher)
         private val groupView: TextView = itemView.findViewById(R.id.taskGroup)
         private val editTask: ImageButton = itemView.findViewById(R.id.edit_button)
-        private val deleteTask: ImageButton = itemView.findViewById(R.id.deleteButton)
+        private val deleteTask: ImageButton = itemView.findViewById(R.id.edit_button)
         private val taskLayout: LinearLayout = itemView.findViewById(R.id.task_layout)
 
         fun bind(task: Task) {
