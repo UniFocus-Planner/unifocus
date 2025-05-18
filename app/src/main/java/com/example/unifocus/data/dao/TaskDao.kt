@@ -39,9 +39,6 @@ interface TaskDao {
     @Query("UPDATE tasks SET selected = :selected WHERE name = :name")
     fun updateSelected(name: String, selected: Boolean)
 
-    @Query("SELECT * FROM tasks WHERE deadline = :date OR (:date IS NULL AND deadline IS NULL)")
-    fun getTasksByDate(date: LocalDateTime?): Flow<List<Task>>
-
     @Query("SELECT * FROM tasks WHERE schedule1 = :schedule OR schedule2 = :schedule")
     fun getTasksBySchedule(schedule: String): List<Task>
 
@@ -61,15 +58,4 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks WHERE selected = :value")
     fun getSelectedTasks(value:Boolean = true): Flow<List<Task>>
-
-    /*
-    *
-    * Здесь должен быть SQL-запрос на получение списка задач по выбранной дате
-    *
-    * Нужно заменить тип Long на DateTime
-    *
-    * @Query("SELECT * FROM tasks WHERE deadline = :date OR (:date IS NULL AND deadline IS NULL)")
-    * fun getTasksByDate(date: Long?): Flow<List<Task>>
-    *
-    * */
 }

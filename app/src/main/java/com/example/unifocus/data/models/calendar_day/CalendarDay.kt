@@ -6,5 +6,6 @@ data class CalendarDay(
     val number: Int,
     val isToday: Boolean,
     val isCurrentMonth: Boolean,
-    val date: Calendar = Calendar.getInstance()
+    val date: Calendar = Calendar.getInstance(),
+    var hasTasks: Boolean = false // Новое поле для отметки задач
 )
