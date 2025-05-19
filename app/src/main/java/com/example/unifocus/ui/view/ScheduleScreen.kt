@@ -11,6 +11,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -221,14 +222,15 @@ class ScheduleScreen : Fragment() {
 
         // Загрузка задач
         viewLifecycleOwner.lifecycleScope.launch {
-            val allTasks = repository.getAllTasks()
-            days.forEach { day ->
-                val hasTasks = allTasks.any { task ->
-                    task.deadline?.toLocalDate() == day.date.toLocalDateTime().toLocalDate()
+            repository.selectedTasks.collect {
+                days.forEach { day ->
+                    val hasTasks = it.any { task ->
+                        task.deadline?.toLocalDate() == day.date.toLocalDateTime().toLocalDate()
+                    }
+                    day.hasTasks = hasTasks
                 }
-                day.hasTasks = hasTasks
+                calendarGrid.adapter?.notifyDataSetChanged()
             }
-            calendarGrid.adapter?.notifyDataSetChanged()
         }
     }
 

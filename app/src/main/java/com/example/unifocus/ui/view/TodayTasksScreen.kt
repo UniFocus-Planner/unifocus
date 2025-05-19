@@ -66,7 +66,7 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
             adapter.submitList(tasks)
         })
 
-        viewModel.logTaskInfo()
+        //viewModel.logTaskInfo()
 
         return view
     }
