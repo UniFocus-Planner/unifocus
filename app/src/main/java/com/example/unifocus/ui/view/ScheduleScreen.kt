@@ -81,7 +81,14 @@ class ScheduleScreen : Fragment() {
 
         // Инициализация адаптера задач
         tasksList.layoutManager = LinearLayoutManager(requireContext())
-        tasksList.adapter = TaskAdapter { /* обработчик клика */ }
+        tasksList.adapter = TaskAdapter(
+            onDeleteClick = {
+
+            },
+            onTaskClick = {
+
+            }
+        )
 
         // Устанавливаем начальную дату и загружаем задачи
         selectedDate = Calendar.getInstance() // Сегодняшняя дата
