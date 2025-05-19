@@ -23,7 +23,7 @@
         android:layout_width="45dp"
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:backgroundTint="#0C68FF"
+        android:backgroundTint="@color/blue_main"
         android:contentDescription="Удалить"
         android:foregroundTint="#FDFDFD"
         android:src="@android:drawable/ic_menu_delete"

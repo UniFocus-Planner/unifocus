@@ -146,6 +146,9 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
     }
 
     fun parseScheduleItemToTask(scheduleItem: ScheduleItem, viewModel: UniFocusViewModel, schedule: List<String>): List<Task> {
+        if (scheduleItem.rooms.isEmpty()) return mutableListOf()
+        if (scheduleItem.teachers.isEmpty()) return mutableListOf()
+
         val startDate = LocalDate.of(2025, 2, 5)
         val dayOfWeek = parseDayOfWeek(scheduleItem.day)
 

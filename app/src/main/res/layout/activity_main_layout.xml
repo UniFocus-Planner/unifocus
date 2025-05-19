@@ -4,15 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#607B8E"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:background="#FFFFFF"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/app_title2"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/blue_main"
+            android:fontFamily="@font/montserrat_semibold"
+            android:gravity="center"
+            android:text=" УниФокус"
+            android:textColor="@color/white"
+            android:textSize="24dp" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="685dp"
         android:layout_above="@id/bottom_navigation"
-        android:background="#FDFDFD" >
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="46dp"
+        android:layout_marginBottom="-77dp"
+        android:background="#FDFDFD">
 
     </FrameLayout>
 
@@ -21,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="77dp"
         android:layout_alignParentBottom="true"
-        android:background="#005DB7"
+        android:background="@color/blue_main"
         android:elevation="8dp"
         android:orientation="horizontal">
 
