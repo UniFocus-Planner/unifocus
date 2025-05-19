@@ -9,6 +9,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -22,6 +23,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var scheduleButton: ImageButton
     private lateinit var profileButton: ImageButton
 
+    //лок навигации при загрузке таблиц
+    var isNavigationLocked = false
+        private set
+
+    fun setNavigationLock(locked: Boolean) {
+        isNavigationLocked = locked
+    }
+
+    override fun onBackPressed() {
+        if (!isNavigationLocked) {
+            super.onBackPressed()
+        } else {
+            Toast.makeText(this, "Дождитесь завершения загрузки", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
 
@@ -32,22 +49,28 @@ class MainActivity : AppCompatActivity() {
 
         scheduleButton = findViewById<ImageButton>(R.id.schedule_screen).also { button ->
             button.setOnClickListener {
-                replaceFragment(ScheduleScreen())
-                updateButtonSelection(button)
+                if (!isNavigationLocked) {
+                    replaceFragment(ScheduleScreen())
+                    updateButtonSelection(button)
+                }
             }
         }
 
         todayButton = findViewById<ImageButton>(R.id.today_button).also { button ->
             button.setOnClickListener {
-                replaceFragment(TodayTasksScreen())
-                updateButtonSelection(button)
+                if (!isNavigationLocked) {
+                    replaceFragment(TodayTasksScreen())
+                    updateButtonSelection(button)
+                }
             }
         }
 
         profileButton = findViewById<ImageButton>(R.id.profile_button).also { button ->
             button.setOnClickListener {
-                replaceFragment(ProfileScreen())
-                updateButtonSelection(button)
+                if (!isNavigationLocked) {
+                    replaceFragment(ProfileScreen())
+                    updateButtonSelection(button)
+                }
             }
         }
 
