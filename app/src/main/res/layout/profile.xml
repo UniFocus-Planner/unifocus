@@ -123,5 +123,31 @@
             android:layout_height="wrap_content"
             android:text="Обновить таблицы расписания" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/montserrat_semibold"
+            android:gravity="center"
+            android:text="Загрузка..."
+            android:textColor="#005DB7"
+            android:textSize="16sp" />
+
+        <ProgressBar
+            android:id="@+id/loading_ring"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"/>
+
     </LinearLayout>
 </ScrollView>

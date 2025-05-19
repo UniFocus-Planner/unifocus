@@ -1,51 +1,129 @@
 package com.example.unifocus.domain
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Environment
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import java.io.*
-import java.net.URL
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
+import java.util.concurrent.atomic.AtomicBoolean
 
 class ScheduleTableDownloader {
+
+    private val isCancelled = AtomicBoolean(false)
+
+    fun cancelAllDownloads() {
+        isCancelled.set(true)
+    }
 
     fun downloadToTempFile(
         context: Context,
         fileUrl: String,
         tempFileName: String,
-        onDownloadComplete: (success: Boolean, file: File?) -> Unit
+        timeoutMillis: Long = 60000,
+        progressCallback: (progress: Int) -> Unit,
+        onDownloadComplete: (success: Boolean, file: File?, error: String?) -> Unit
     ) {
+        isCancelled.set(false)
         val tempFile = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), tempFileName)
-
         if (tempFile.exists()) tempFile.delete()
+
+        val startTime = System.currentTimeMillis()
+        val handler = Handler(Looper.getMainLooper())
 
         Thread {
             try {
                 val url = URL(fileUrl)
-                val connection = url.openConnection()
+                val connection = url.openConnection().apply {
+                    connectTimeout = timeoutMillis.toInt()
+                    readTimeout = timeoutMillis.toInt()
+                }
+
+                // отмена перед подключением
+                if (isCancelled.get()) {
+                    handler.post { onDownloadComplete(false, null, "Download cancelled") }
+                    return@Thread
+                }
+
                 connection.connect()
+
+                // таймаут
+                if (System.currentTimeMillis() - startTime > timeoutMillis) {
+                    handler.post { onDownloadComplete(false, null, "Connection timeout") }
+                    return@Thread
+                }
+
+                val contentLength = connection.contentLengthLong
+                var downloadedBytes = 0L
                 val input = connection.getInputStream()
                 val output = FileOutputStream(tempFile)
 
-                input.copyTo(output)
+                val buffer = ByteArray(8 * 1024)
+                var bytesRead: Int
+
+                while (input.read(buffer).also { bytesRead = it } != -1) {
+                    if (isCancelled.get()) {
+                        input.close()
+                        output.close()
+                        tempFile.delete()
+                        handler.post { onDownloadComplete(false, null, "Download cancelled") }
+                        return@Thread
+                    }
+
+                    if (System.currentTimeMillis() - startTime > timeoutMillis) {
+                        input.close()
+                        output.close()
+                        tempFile.delete()
+                        handler.post { onDownloadComplete(false, null, "Download timeout") }
+                        return@Thread
+                    }
+
+                    output.write(buffer, 0, bytesRead)
+                    downloadedBytes += bytesRead
+
+                    if (contentLength > 0) {
+                        val progress = (downloadedBytes * 100 / contentLength).toInt()
+                        handler.post { progressCallback(progress) }
+                    }
+                }
 
                 output.flush()
                 output.close()
                 input.close()
 
-                onDownloadComplete(true, tempFile)
+                handler.post { onDownloadComplete(true, tempFile, null) }
             } catch (e: Exception) {
-                Log.e("ManualDownload", "Ошибка загрузки файла", e)
-                onDownloadComplete(false, null)
+                Log.e("ManualDownload", "Download error", e)
+                tempFile.delete()
+                handler.post { onDownloadComplete(false, null, e.message ?: "Download error") }
             }
         }.start()
     }
 
-    fun replaceFile(
+    fun downloadAndReplace(
+        context: Context,
+        fileUrl: String,
+        fileName: String,
+        timeoutMillis: Long = 60000,
+        progressCallback: (progress: Int) -> Unit,
+        onComplete: (success: Boolean, error: String?) -> Unit
+    ) {
+        val tempFileName = "${fileName}.tmp_${System.currentTimeMillis()}"
+
+        downloadToTempFile(context, fileUrl, tempFileName, timeoutMillis, progressCallback) { success, file, error ->
+            if (success && file != null) {
+                replaceFile(context, tempFileName, fileName) { replaceSuccess ->
+                    onComplete(replaceSuccess, if (!replaceSuccess) "File replace failed" else null)
+                }
+            } else {
+                onComplete(false, error)
+            }
+        }
+    }
+
+    private fun replaceFile(
         context: Context,
         tempFileName: String,
         targetFileName: String,
@@ -77,24 +155,5 @@ class ScheduleTableDownloader {
             Log.e("FileReplace", "Error replacing file", e)
             onComplete(false)
         }
-    }
-
-    fun downloadAndReplace(
-        context: Context,
-        fileUrl: String,
-        fileName: String,
-        onComplete: (success: Boolean) -> Unit
-    ): Long {
-        val tempFileName = "${fileName}.tmp_${System.currentTimeMillis()}"
-
-        downloadToTempFile(context, fileUrl, tempFileName) { success, _ ->
-            if (success) {
-                replaceFile(context, tempFileName, fileName, onComplete)
-            } else {
-                onComplete(false)
-            }
-        }
-
-        return -1L
     }
 }
