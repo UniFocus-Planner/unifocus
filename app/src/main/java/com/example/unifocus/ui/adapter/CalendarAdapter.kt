@@ -78,11 +78,15 @@ class CalendarAdapter(
         days.clear()
         days.addAll(newDays)
 
-        // Обновляем позиции после изменения данных
+        // Сбрасываем выделение при обновлении
+        selectedPosition = -1
+        todayPosition = -1
+
+        // Обновляем позиции сегодняшнего дня
         days.forEachIndexed { index, day ->
             if (day.isToday) {
                 todayPosition = index
-                if (selectedPosition == -1) selectedPosition = index
+                selectedPosition = index // Автовыбор сегодняшнего дня
             }
         }
 

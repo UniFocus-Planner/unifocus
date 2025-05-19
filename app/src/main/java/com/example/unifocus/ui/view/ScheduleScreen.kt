@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,10 +21,14 @@ import com.example.unifocus.R
 import com.example.unifocus.data.database.Converters
 import com.example.unifocus.data.database.UniFocusDatabase
 import com.example.unifocus.data.models.calendar_day.CalendarDay
+import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.repository.UniFocusRepository
 import com.example.unifocus.ui.adapter.CalendarAdapter
 import com.example.unifocus.ui.adapter.TaskAdapter
 import com.example.unifocus.ui.decorators.VerticalSpaceItemDecoration
+import com.example.unifocus.ui.dialogues.EditTaskDialogFragment
+import com.example.unifocus.ui.viewmodels.UniFocusViewModel
+import kotlinx.coroutines.Dispatchers
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -31,6 +36,7 @@ import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
 import kotlinx.coroutines.launch
+import java.time.format.DateTimeFormatter
 
 class ScheduleScreen : Fragment() {
     private lateinit var calendarGrid: RecyclerView
@@ -42,6 +48,7 @@ class ScheduleScreen : Fragment() {
     private lateinit var repository: UniFocusRepository
     private val days = mutableListOf<CalendarDay>() // Добавляем поле для хранения дней
     private lateinit var tasksList: RecyclerView
+    private lateinit var viewModel: UniFocusViewModel
 
     // Обработчик свайпов с nullable-параметрами
     private val gestureDetector by lazy {
@@ -85,10 +92,10 @@ class ScheduleScreen : Fragment() {
         tasksList.layoutManager = LinearLayoutManager(requireContext())
         tasksList.adapter = TaskAdapter(
             onDeleteClick = {
-
+                    task -> viewModel.deleteTaskById(task.id)
             },
             onTaskClick = {
-
+                    task -> showEditTaskDialog(task)
             }
         )
 
@@ -121,6 +128,7 @@ class ScheduleScreen : Fragment() {
         startAnimation(R.anim.slide_in_left, R.anim.slide_out_right) {
             currentCalendar.add(Calendar.MONTH, -1)
             updateMonthYearHeader()
+            resetSelectedDate()
             setupCalendar()
         }
     }
@@ -130,8 +138,17 @@ class ScheduleScreen : Fragment() {
         startAnimation(R.anim.slide_in_right, R.anim.slide_out_left) {
             currentCalendar.add(Calendar.MONTH, 1)
             updateMonthYearHeader()
+            resetSelectedDate()
             setupCalendar()
         }
+    }
+
+    // Новый метод для сброса выбранной даты
+    private fun resetSelectedDate() {
+        selectedDate = Calendar.getInstance() // Сегодняшняя дата
+        updateDateHeader()
+        loadTasksForSelectedDate()
+        calendarGrid.adapter?.notifyDataSetChanged() // Обновляем календарь
     }
 
     private fun startAnimation(
@@ -254,6 +271,34 @@ class ScheduleScreen : Fragment() {
             ).collect { tasks -> // Коллектим Flow
                 (tasksList.adapter as? TaskAdapter)?.submitList(tasks)
             }
+        }
+    }
+
+    // Функция перенесена из TodayTasksScreen
+    private fun showEditTaskDialog(task: Task) {
+        val dialog = EditTaskDialogFragment.newInstance(task)
+        dialog.setOnTaskUpdatedListener(object : EditTaskDialogFragment.OnTaskUpdatedListener {
+
+            override fun onTaskUpdated(task: Task) {
+                viewModel.updateTask(task)
+
+                rescheduleTaskNotification(task)
+            }
+        })
+        dialog.show(parentFragmentManager, "EditTaskDialog")
+    }
+
+    // Функция перенесена из TodayTasksScreen
+    fun rescheduleTaskNotification(task: Task) {
+        viewModel.viewModelScope.launch(Dispatchers.IO) {
+            val channelID = "Unifocus"
+            val title = "Уведомление о задаче:"
+            val text = "${task.name}\nДедлайн: ${
+                task.deadline?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm", Locale.getDefault()))
+                    ?: "не указан"
+            }"
+
+            viewModel.rescheduleNotification(context, task.notificationTime, task.id, channelID, title, text)
         }
     }
 
