@@ -7,7 +7,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.compose.ui.window.isPopupLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -66,6 +66,9 @@ class ScheduleAdapter(
 
             deleteButton.setOnClickListener {
                 onDeleteClick(schedule)
+                if (isAddMode) {
+                    Toast.makeText(itemView.context, "Расписание добавлено", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

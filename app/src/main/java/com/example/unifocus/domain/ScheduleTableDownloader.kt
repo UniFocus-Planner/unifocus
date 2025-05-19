@@ -13,23 +13,6 @@ import android.util.Log
 
 class ScheduleTableDownloader {
 
-    fun checkAndRequestStoragePermission(activity: Activity, requestCode: Int) {
-        if (ContextCompat.checkSelfPermission(
-                activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ),
-                requestCode
-            )
-        }
-    }
-
     fun downloadToTempFile(
         context: Context,
         fileUrl: String,
@@ -113,16 +96,5 @@ class ScheduleTableDownloader {
         }
 
         return -1L
-    }
-
-    fun readDownloadedFile(context: Context, fileName: String): String {
-        val downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
-        val file = File(downloadsDir, fileName)
-
-        return if (file.exists()) {
-            file.readText()
-        } else {
-            throw FileNotFoundException("File not found: ${file.absolutePath}")
-        }
     }
 }
