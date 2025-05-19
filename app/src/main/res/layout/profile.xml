@@ -128,7 +128,7 @@
             android:fontFamily="@font/montserrat_semibold"
             android:gravity="center"
             android:text="Загрузка..."
-            android:textColor="#005DB7"
+            android:textColor="@color/blue_main"
             android:textSize="16sp" />
 
         <ProgressBar
@@ -136,8 +136,14 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:layout_marginTop="8dp"/>
+            android:backgroundTint="@color/blue_main"
+            android:foregroundTint="@color/blue_main"
+            android:indeterminateTint="@color/blue_main"
+            android:progressBackgroundTint="@color/blue_main"
+            android:progressTint="@color/blue_main"
+            android:secondaryProgressTint="@color/blue_main" />
 
     </LinearLayout>
 </ScrollView>

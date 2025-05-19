@@ -127,21 +127,28 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
         startDate: LocalDate,
         dayOfWeek: DayOfWeek,
         weekType: ScheduleItem.WeekType?,
-        totalWeeks: Int = 1
+        totalWeeks: Int = 1,
+        isOddWeekStart: Boolean = true
     ): List<LocalDate> {
         val dates = mutableListOf<LocalDate>()
-
         var currentDate = startDate.with(TemporalAdjusters.nextOrSame(dayOfWeek))
 
         for (week in 0 until totalWeeks) {
-            if (weekType == ScheduleItem.WeekType.ODD) {
+            val isOddWeek = if (isOddWeekStart) week % 2 == 0 else week % 2 == 1
+
+            if (
+                weekType == null ||
+                (weekType == ScheduleItem.WeekType.ODD && isOddWeek) ||
+                (weekType == ScheduleItem.WeekType.EVEN && !isOddWeek)
+            ) {
                 dates.add(currentDate)
             }
+
             currentDate = currentDate.plusWeeks(1)
         }
 
         return dates
-    }
+        }
 
     fun getLessonStartTime(date: LocalDate, lessonNumber: Int): LocalDateTime {
         return when (lessonNumber) {
