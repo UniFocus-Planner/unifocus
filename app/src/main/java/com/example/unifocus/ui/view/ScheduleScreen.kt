@@ -22,6 +22,7 @@ import com.example.unifocus.data.models.calendar_day.CalendarDay
 import com.example.unifocus.data.repository.UniFocusRepository
 import com.example.unifocus.ui.adapter.CalendarAdapter
 import com.example.unifocus.ui.adapter.TaskAdapter
+import com.example.unifocus.ui.decorators.VerticalSpaceItemDecoration
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -89,6 +90,8 @@ class ScheduleScreen : Fragment() {
 
             }
         )
+
+        tasksList.addItemDecoration(VerticalSpaceItemDecoration(16))
 
         // Устанавливаем начальную дату и загружаем задачи
         selectedDate = Calendar.getInstance() // Сегодняшняя дата
@@ -247,7 +250,7 @@ class ScheduleScreen : Fragment() {
                 Converters().dateToTimestamp(start)!!,
                 Converters().dateToTimestamp(end)!!
             ).collect { tasks -> // Коллектим Flow
-                (tasksList?.adapter as? TaskAdapter)?.submitList(tasks)
+                (tasksList.adapter as? TaskAdapter)?.submitList(tasks)
             }
         }
     }

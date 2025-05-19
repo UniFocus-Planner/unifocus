@@ -20,7 +20,7 @@
             android:visibility="invisible"
             android:background="@drawable/bg_current_day"/>
 
-        <!-- Новый маркер выбранной даты -->
+        <!-- Метка выбранной даты -->
         <View
             android:id="@+id/day_selected"
             android:layout_width="match_parent"
@@ -35,13 +35,15 @@
             android:textSize="16sp"
             android:layout_gravity="center"
             android:gravity="center"/>
-    </FrameLayout>
 
-    <!-- Метка задач -->
-    <View
-        android:id="@+id/task_dot"
-        android:layout_width="4dp"
-        android:layout_height="4dp"
-        android:background="@drawable/bg_task_dot"
-        android:visibility="gone"/>
+        <!-- Метка задач (исправленное позиционирование) -->
+        <View
+            android:id="@+id/task_dot"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:background="@drawable/bg_task_dot"
+            android:layout_gravity="bottom|end"
+            android:visibility="gone"/>
+
+    </FrameLayout>
 </LinearLayout>
