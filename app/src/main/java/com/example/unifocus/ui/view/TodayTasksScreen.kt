@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -51,7 +52,7 @@ class TodayTasksScreen : Fragment(), CreateTaskDialog.OnTaskCreatedListener {
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(VerticalSpaceItemDecoration(16))
 
-        val addTask: Button = view.findViewById(R.id.add_task)
+        val addTask: ImageButton = view.findViewById(R.id.add_task)
         addTask.setOnClickListener {
             showCreateTaskDialog()
         }
