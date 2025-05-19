@@ -129,6 +129,7 @@ class ScheduleTableParser {
 
             for (group in groups) {
                 for (subgroup in group.subgroups) {
+                    if (subgroup.name == "2") continue
                     fun createItem(cell: Cell?, roomCell: Cell?, weekType: ScheduleItem.WeekType): ScheduleItem {
                         val subjectText = getCellValueAsString(cell).trim()
                         val roomText = getCellValueAsString(roomCell).trim()

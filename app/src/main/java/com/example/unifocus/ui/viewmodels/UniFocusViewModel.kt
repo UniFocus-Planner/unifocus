@@ -133,7 +133,9 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         viewModelScope.launch(Dispatchers.IO) {
 
             Log.d("SELECTING", "SELECTING")
-            val tasks = repository.getTasksBySchedule(schedule.groupName)
+            var tasks = repository.getTasksBySchedule(schedule.groupName)
+            if (tasks.isEmpty()) tasks = repository.getTasksByGroup(schedule.groupName)
+
             tasks.forEach {
                 Log.d("TASK", tasks.toString())
             }
@@ -201,7 +203,6 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
 
         val alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        // Android 6.0+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,

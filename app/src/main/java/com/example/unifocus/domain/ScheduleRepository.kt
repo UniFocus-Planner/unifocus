@@ -5,6 +5,7 @@ import com.example.unifocus.data.models.task.TaskType
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.temporal.TemporalAdjusters
 
 class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleItem>>) {
@@ -109,7 +110,6 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
         return result
     }
 
-    // Функция для преобразования дня недели из строки в DayOfWeek
     fun parseDayOfWeek(dayString: String): DayOfWeek {
         return when (dayString) {
             "Понедельник" -> DayOfWeek.MONDAY
@@ -134,15 +134,26 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
         var currentDate = startDate.with(TemporalAdjusters.nextOrSame(dayOfWeek))
 
         for (week in 0 until totalWeeks) {
-            if (weekType == null ||
-                (weekType == ScheduleItem.WeekType.EVEN && week % 2 == 0) ||
-                (weekType == ScheduleItem.WeekType.ODD && week % 2 == 1)) {
+            if (weekType == ScheduleItem.WeekType.ODD) {
                 dates.add(currentDate)
             }
             currentDate = currentDate.plusWeeks(1)
         }
 
         return dates
+    }
+
+    fun getLessonStartTime(date: LocalDate, lessonNumber: Int): LocalDateTime {
+        return when (lessonNumber) {
+            1 -> date.atTime(9, 0)
+            2 -> date.atTime(10, 50)
+            3 -> date.atTime(12, 40)
+            4 -> date.atTime(14, 30)
+            5 -> date.atTime(16, 20)
+            6 -> date.atTime(18, 5)
+            7 -> date.atTime(19, 50)
+            else -> throw IllegalArgumentException("Номер пары должен быть от 1 до 7 " + lessonNumber)
+        }
     }
 
     fun parseScheduleItemToTask(scheduleItem: ScheduleItem, viewModel: UniFocusViewModel, schedule: List<String>): List<Task> {
@@ -163,7 +174,7 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
             viewModel.createTask(
                 name = scheduleItem.subject,
                 description = "Пара ${scheduleItem.lessonNum}",
-                deadline = lessonDate.atTime(9, 0),
+                deadline = getLessonStartTime(lessonDate, scheduleItem.lessonNum.toInt()),
                 taskType = TaskType.CLASS,
                 room = scheduleItem.rooms.joinToString(", "),
                 teacher = scheduleItem.teachers.joinToString(", "),

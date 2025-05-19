@@ -8,10 +8,14 @@
 
     <SearchView
         android:id="@+id/searchView"
+        style="@style/Theme.UniFocus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue_main"
+        android:foregroundTint="@color/blue_main"
+        android:iconifiedByDefault="false"
         android:queryHint="Поиск расписания"
-        android:iconifiedByDefault="false"/>
+        android:theme="@style/Theme.UniFocus" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSchedules"

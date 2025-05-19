@@ -42,18 +42,18 @@ interface TaskDao {
     @Query("UPDATE tasks SET selected = :selected WHERE name = :name")
     fun updateSelected(name: String, selected: Boolean)
 
-    @Query("""
-    SELECT * FROM tasks 
-    WHERE schedule1 = :schedule OR 
-          (schedule2 IS NOT NULL AND schedule2 = :schedule)
-""")
+    @Query("SELECT * FROM tasks WHERE schedule1 = :schedule")
     fun getTasksBySchedule(schedule: String): List<Task>
+
+    @Query("SELECT * FROM tasks WHERE schedule2 = :group")
+    fun getTasksByGroup(group: String): List<Task>
 
     @Query("""
         SELECT * FROM tasks 
         WHERE 
             deadline BETWEEN :startOfDay AND :endOfDay 
             AND selected = 1
+        ORDER BY deadline ASC
     """)
     fun getTodaySelectedTasks(
         startOfDay: Long,

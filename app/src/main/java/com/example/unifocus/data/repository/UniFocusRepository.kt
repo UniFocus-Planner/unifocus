@@ -76,6 +76,10 @@ class UniFocusRepository(private val database: UniFocusDatabase) {
         return taskDao.getTasksBySchedule(schedule)
     }
 
+    suspend fun getTasksByGroup(group:String) : List<Task> {
+        return taskDao.getTasksByGroup(group)
+    }
+
     suspend fun getTodaySelectedTasks(start: Long, end: Long): Flow<List<Task>>{
         return taskDao.getTodaySelectedTasks(start, end)
     }
