@@ -17,7 +17,7 @@
             android:fontFamily="@font/montserrat_semibold"
             android:gravity="center"
             android:text="@string/profile"
-            android:textColor="#005DB7"
+            android:textColor="@color/blue_main"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -36,25 +36,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="8dp"
                 android:fontFamily="@font/montserrat_semibold"
                 android:text="@string/schedule"
-                android:textColor="#005DB7"
+                android:textColor="@color/blue_main"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/schedule_add_button"
+                android:id="@+id/add_schedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Добавить расписание"
                 android:src="@android:drawable/ic_menu_add"
-                app:tint="#005CB7"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/blue_main" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -83,7 +82,7 @@
             android:fontFamily="@font/montserrat_semibold"
             android:gravity="left"
             android:text="@string/settings"
-            android:textColor="#005DB7"
+            android:textColor="@color/blue_main"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -97,31 +96,22 @@
             android:switchTextAppearance="@style/TextAppearance.Compat.Notification.Info"
             android:text="@string/allow_notifications"
             android:textAlignment="viewStart"
-            android:textColor="#005DB7"
+            android:textColor="@color/blue_main"
             android:textSize="16sp" />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="18dp" />
 
-        <Switch
-            android:id="@+id/allow_vibration"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@drawable/rounded_white_background"
-            android:fontFamily="@font/montserrat_semibold"
-            android:paddingLeft="20dp"
-            android:switchTextAppearance="@style/TextAppearance.Compat.Notification.Info"
-            android:text="@string/allow_vibration"
-            android:textAlignment="viewStart"
-            android:textColor="#005DB7"
-            android:textSize="16sp" />
-
         <Button
             android:id="@+id/update_tables_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Обновить таблицы расписания" />
+            android:background="@drawable/rounded_white_hover_background_selector"
+            android:fontFamily="@font/montserrat_semibold"
+            android:text="Обновить таблицы расписания"
+            android:textAllCaps="false"
+            android:textColor="@color/blue_main" />
 
     </LinearLayout>
 </ScrollView>

@@ -50,7 +50,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
 
-        view.findViewById<AppCompatImageButton?>(R.id.schedule_add_button).also {
+        view.findViewById<AppCompatImageButton?>(R.id.add_schedule).also {
             it.setOnClickListener {
                 showCreateScheduleDialog()
             }

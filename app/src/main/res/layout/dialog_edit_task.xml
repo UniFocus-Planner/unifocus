@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat_semibold"
             android:text="Отредактировать "
-            android:textColor="#005EB8"
+            android:textColor="@color/blue_main"
             android:textSize="26sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
