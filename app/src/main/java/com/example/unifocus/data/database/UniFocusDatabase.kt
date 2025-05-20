@@ -7,7 +7,7 @@ import com.example.unifocus.data.dao.ScheduleDao
 import com.example.unifocus.data.models.task.Task
 import com.example.unifocus.data.dao.TaskDao
 
-@Database(entities = [Task::class, Schedule::class], version = 44)
+@Database(entities = [Task::class, Schedule::class], version = 45)
 @TypeConverters(Converters::class)
 abstract class UniFocusDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao

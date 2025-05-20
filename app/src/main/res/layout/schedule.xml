@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="77dp">
 
     <!-- Заголовок с месяцем и годом -->
     <TextView
@@ -19,81 +22,88 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <!-- Строка с днями недели -->
     <LinearLayout
+        android:id="@+id/calendar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingBottom="8dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:layout_width="0dp"
+        <!-- Строка с днями недели -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/montserrat"
             android:gravity="center"
-            android:text="Пн" />
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center"
-            android:text="Вт" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="Пн" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center"
-            android:text="Ср" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="Вт" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center"
-            android:text="Чт" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="Ср" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center"
-            android:text="Пт" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="Чт" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center"
-            android:text="Сб" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="Пт" />
 
-        <TextView
-            android:layout_width="0dp"
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="Сб" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat"
+                android:gravity="center"
+                android:text="Вс" />
+        </LinearLayout>
+
+        <!-- RecyclerView с GridLayoutManager для отображения дней в календаре -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/calendar_grid"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center"
-            android:text="Вс" />
+            android:orientation="horizontal"
+            android:paddingBottom="16dp"
+            android:scrollbars="none"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="7" />
     </LinearLayout>
-
-    <!-- RecyclerView с GridLayoutManager для отображения дней в календаре -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendar_grid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="7"
-        android:orientation="horizontal"
-        android:scrollbars="none"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -101,16 +111,34 @@
         android:orientation="vertical"
         android:paddingBottom="16dp">
 
-        <!-- TextView для отображения сегодняшнего дня -->
-        <TextView
-            android:id="@+id/today_header"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_semibold"
-            android:padding="16dp"
-            android:textColor="@color/blue_main"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/today_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/montserrat_semibold"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/blue_main"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/toggle_calendar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_up"
+                android:contentDescription="Свернуть календарь"
+                app:tint="@color/blue_main" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- RecyclerView для списка задач -->

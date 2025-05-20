@@ -35,11 +35,11 @@ class TaskAdapter(
 
         fun bind(task: Task) {
             nameView.text = task.name
-//            descView.text = task.description ?: "—"
-            roomView.text = task.room ?: "—"
+//            descView.text = task.description ?: ""
+            roomView.text = task.room ?: ""
             deadlineView.text = task.deadline?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-            teacherView.text = task.teacher ?: "—"
-            groupView.text = task.group ?: "—"
+            teacherView.text = task.teacher ?: ""
+            groupView.text = task.group ?: ""
 
             taskLayout.setOnClickListener {
                 onTaskClick(task)
