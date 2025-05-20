@@ -8,7 +8,7 @@ import java.util.Calendar
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val description: String?,
+//    val description: String?,
     val deadline: LocalDateTime?,
     val notificationTime: Calendar?,
     val taskType: TaskType,

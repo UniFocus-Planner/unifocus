@@ -1,16 +1,19 @@
 package com.example.unifocus.domain
 
+import android.Manifest
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.unifocus.MainActivity
 import com.example.unifocus.R
 
 class NotificationService {
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun sendNotification(context: Context, NOTIFICATION_ID: Int, CHANNEL_ID: String, notification_title: String, notification_text: String) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

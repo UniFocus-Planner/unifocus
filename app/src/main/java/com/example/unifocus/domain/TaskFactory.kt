@@ -9,7 +9,7 @@ class TaskFactory {
     companion object {
         fun createTask(
             name: String,
-            description: String? = null,
+//            description: String? = null,
             deadline: LocalDateTime? = null,
             notificationTime: Calendar? = null,
             taskType: TaskType = TaskType.NONE,
@@ -24,7 +24,7 @@ class TaskFactory {
         ): Task {
             return Task(
                 name = name,
-                description = description,
+//                description = description,
                 deadline = deadline,
                 notificationTime = notificationTime,
                 taskType = taskType,

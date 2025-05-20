@@ -1,5 +1,6 @@
 package com.example.unifocus.ui.viewmodels
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -38,7 +39,7 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
 
     fun createTask(
         name: String,
-        description: String? = null,
+//        description: String? = null,
         deadline: LocalDateTime? = null,
         notificationTime: Calendar? = null,
         notificationId: Int? = null,
@@ -53,7 +54,7 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         additionalInformation: String? = null
     ): Task {
         val task = TaskFactory.createTask( name = name,
-            description = description,
+//            description = description,
             deadline = deadline,
             notificationTime = notificationTime,
             taskType = taskType,
@@ -175,6 +176,7 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         }
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     fun scheduleNotification(
         context: Context?,
         targetTime: Calendar?,

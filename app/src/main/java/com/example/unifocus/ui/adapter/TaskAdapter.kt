@@ -23,7 +23,7 @@ class TaskAdapter(
         private val onDeleteClick: (Task) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameView: TextView = itemView.findViewById(R.id.taskName)
-        private val descView: TextView = itemView.findViewById(R.id.taskDesc)
+//        private val descView: TextView = itemView.findViewById(R.id.taskDesc)
         private val teacherView: TextView = itemView.findViewById(R.id.taskTeacher)
         private val groupView: TextView = itemView.findViewById(R.id.taskGroup)
         private val editTask: ImageButton = itemView.findViewById(R.id.edit_button)
@@ -32,7 +32,7 @@ class TaskAdapter(
 
         fun bind(task: Task) {
             nameView.text = task.name
-            descView.text = task.description ?: "—"
+//            descView.text = task.description ?: "—"
             teacherView.text = task.teacher ?: "—"
             groupView.text = task.group ?: "—"
 
