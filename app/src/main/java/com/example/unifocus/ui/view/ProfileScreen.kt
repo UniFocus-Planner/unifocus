@@ -258,7 +258,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                     (activity as? MainActivity)?.setNavigationLock(false)
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                     Log.d("Delay", "DELAY OVER")
-                }, 10000)
+                }, 15000)
             }
         }.start()
     }

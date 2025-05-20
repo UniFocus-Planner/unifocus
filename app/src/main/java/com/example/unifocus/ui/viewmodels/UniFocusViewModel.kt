@@ -26,7 +26,6 @@ import java.util.Calendar
 
 class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel() {
 
-    val classTasks: LiveData<List<Task>> = repository.classTasks.asLiveData()
     val schedules: LiveData<List<Schedule>> = repository.schedules.asLiveData()
     val selectedSchedules: LiveData<List<Schedule>> = repository.selectedSchedules.asLiveData()
     val todaySelectedTasks: LiveData<List<Task>> = repository.todayTasks.asLiveData()
