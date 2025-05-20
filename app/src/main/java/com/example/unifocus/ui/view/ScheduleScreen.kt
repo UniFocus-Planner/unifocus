@@ -9,9 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.asLiveData
+import android.transition.TransitionInflater
+import android.transition.TransitionManager
+import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -42,9 +45,12 @@ class ScheduleScreen : Fragment() {
     private lateinit var calendarGrid: RecyclerView
     private lateinit var monthYearHeader: TextView
     private lateinit var todayHeader: TextView
+    private lateinit var calendarContainer: LinearLayout
     private var currentCalendar: Calendar = Calendar.getInstance()
     private var isAnimating = false // Флаг для предотвращения множественных свайпов
     private var selectedDate: Calendar = Calendar.getInstance() // Выбранная дата
+    private lateinit var toggleCalendarButton: ImageButton
+    private var isCalendarExpanded = true
     private lateinit var repository: UniFocusRepository
     private val days = mutableListOf<CalendarDay>() // Добавляем поле для хранения дней
     private lateinit var tasksList: RecyclerView
@@ -80,6 +86,8 @@ class ScheduleScreen : Fragment() {
         monthYearHeader = view.findViewById(R.id.month_year_header)
         todayHeader = view.findViewById(R.id.today_header)
         tasksList = view.findViewById(R.id.tasks_list)
+        calendarContainer = view.findViewById(R.id.calendar_container)
+        toggleCalendarButton = view.findViewById(R.id.toggle_calendar)
         return view
     }
 
@@ -121,6 +129,26 @@ class ScheduleScreen : Fragment() {
             gestureDetector.onTouchEvent(event)
             true
         }
+
+        // Добавляем обработчик клика
+        toggleCalendarButton.setOnClickListener {
+            toggleCalendarVisibility()
+        }
+    }
+
+    private fun toggleCalendarVisibility() {
+        isCalendarExpanded = !isCalendarExpanded
+
+        calendarContainer.visibility = if (isCalendarExpanded) View.VISIBLE else View.GONE
+        toggleCalendarButton.setImageResource(
+            if (isCalendarExpanded) R.drawable.ic_arrow_up
+            else R.drawable.ic_arrow_down
+        )
+
+        // Анимация для плавного перехода
+        val transition = TransitionInflater.from(requireContext())
+            .inflateTransition(android.R.transition.move)
+        TransitionManager.beginDelayedTransition(calendarContainer as ViewGroup, transition)
     }
 
     private fun showPreviousMonth() {
