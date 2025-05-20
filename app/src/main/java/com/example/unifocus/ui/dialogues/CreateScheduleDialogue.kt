@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,6 +54,9 @@ class CreateScheduleDialogue : DialogFragment() {
 
         viewModel.schedules.observe(viewLifecycleOwner) { list ->
             adapter.submitData(list)
+            if (list.isEmpty()) {
+                Toast.makeText(requireContext(), "Обновите таблицы расписания", Toast.LENGTH_SHORT).show()
+            }
         }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

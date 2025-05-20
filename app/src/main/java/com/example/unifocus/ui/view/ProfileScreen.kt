@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -44,6 +45,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
     private lateinit var loadingRing: ProgressBar
     private lateinit var updateButton: Button
     private lateinit var loadingText: TextView
+    private lateinit var addScheduleButton: ImageButton
 
     private val handler = Handler(Looper.getMainLooper())
     private var timeoutRunnable: Runnable? = null
@@ -69,7 +71,10 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         loadingRing = view.findViewById(R.id.loading_ring)
         loadingText = view.findViewById(R.id.loading_text)
 
+        addScheduleButton = view.findViewById(R.id.add_schedule)
+
         updateButton.isEnabled = true
+        addScheduleButton.isEnabled = true
         progressBar.visibility = View.GONE
         loadingRing.visibility = View.GONE
         loadingText.visibility = View.GONE
@@ -77,7 +82,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
 
-        view.findViewById<AppCompatImageButton?>(R.id.add_schedule).also {
+        addScheduleButton.also {
             it.setOnClickListener {
                 showCreateScheduleDialog()
             }
@@ -110,6 +115,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                     loadingRing.visibility = View.GONE
                     loadingText.visibility = View.GONE
                     updateButton.isEnabled = true
+                    addScheduleButton.isEnabled = true
                 }
             })
         }
@@ -121,6 +127,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         (activity as? MainActivity)?.setNavigationLock(true)
 
         updateButton.isEnabled = false
+        addScheduleButton.isEnabled = false
         progressBar.progress = 0
         progressBar.max = 1000
         progressBar.visibility = View.VISIBLE
@@ -142,7 +149,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
             // таблица с нестандартной структурой и форматом, могут быть ошибки!
             //Pair("schedule_ibo.xls", "https://misis.ru/files/-/dbba1aeada7152fef480fd72714b85b2/ibo_150425.xlsx")
         )
-
         val latch = CountDownLatch(tablesToDownload.size)
         val results = AtomicInteger(0)
         val errors = mutableListOf<String>()
@@ -234,14 +240,20 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                     viewModel.createSchedule(group)
                 }
 
-                updateButton.isEnabled = true
-                progressBar.visibility = View.GONE
-                loadingRing.visibility = View.GONE
-                loadingText.visibility = View.GONE
+                // задержка 10 секунд перед разблокировкой навигации
+                Log.d("Delay", "10 SEC DELAY")
+                handler.postDelayed({
+                    updateButton.isEnabled = true
+                    addScheduleButton.isEnabled = true
+                    progressBar.visibility = View.GONE
+                    loadingRing.visibility = View.GONE
+                    loadingText.visibility = View.GONE
 
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-                completeProgressWithAnimation()
-                (activity as? MainActivity)?.setNavigationLock(false)
+                    completeProgressWithAnimation()
+                    (activity as? MainActivity)?.setNavigationLock(false)
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    Log.d("Delay", "DELAY OVER")
+                }, 10000)
             }
         }.start()
     }
@@ -275,5 +287,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
 
         timeoutRunnable = null
         super.onDestroyView()
+        handler.removeCallbacksAndMessages(null)
     }
 }
