@@ -24,7 +24,6 @@ class TaskAdapter(
         private val onDeleteClick: (Task) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameView: TextView = itemView.findViewById(R.id.taskName)
-//        private val descView: TextView = itemView.findViewById(R.id.taskDesc)
         private val roomView: TextView = itemView.findViewById(R.id.taskRoom)
         private val deadlineView: TextView = itemView.findViewById(R.id.taskDeadline)
         private val teacherView: TextView = itemView.findViewById(R.id.taskTeacher)

@@ -26,7 +26,6 @@ import java.util.Calendar
 
 class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel() {
 
-    val classTasks: LiveData<List<Task>> = repository.classTasks.asLiveData()
     val schedules: LiveData<List<Schedule>> = repository.schedules.asLiveData()
     val selectedSchedules: LiveData<List<Schedule>> = repository.selectedSchedules.asLiveData()
     val todaySelectedTasks: LiveData<List<Task>> = repository.todayTasks.asLiveData()
@@ -39,7 +38,6 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
 
     fun createTask(
         name: String,
-//        description: String? = null,
         deadline: LocalDateTime? = null,
         notificationTime: Calendar? = null,
         notificationId: Int? = null,
@@ -54,7 +52,6 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         additionalInformation: String? = null
     ): Task {
         val task = TaskFactory.createTask( name = name,
-//            description = description,
             deadline = deadline,
             notificationTime = notificationTime,
             taskType = taskType,

@@ -86,23 +86,6 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <Switch
-            android:id="@+id/allow_notifications"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@drawable/rounded_white_background"
-            android:fontFamily="@font/montserrat_semibold"
-            android:paddingLeft="20dp"
-            android:switchTextAppearance="@style/TextAppearance.Compat.Notification.Info"
-            android:text="@string/allow_notifications"
-            android:textAlignment="viewStart"
-            android:textColor="@color/blue_main"
-            android:textSize="16sp" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="18dp" />
-
         <Button
             android:id="@+id/update_tables_button"
             android:layout_width="match_parent"
@@ -118,8 +101,14 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_weight="1"
-            android:layout_marginTop="10dp" />
+            android:backgroundTint="@color/blue_main"
+            android:foregroundTint="@color/blue_main"
+            android:indeterminateTint="@color/blue_main"
+            android:progressBackgroundTint="@color/blue_main"
+            android:progressTint="@color/blue_main"
+            android:secondaryProgressTint="@color/blue_main" />
 
         <TextView
             android:id="@+id/loading_text"

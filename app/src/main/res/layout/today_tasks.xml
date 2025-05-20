@@ -17,7 +17,7 @@
         android:fontFamily="@font/montserrat_semibold"
         android:gravity="center"
         android:paddingBottom="10dp"
-        android:text="Расписание"
+        android:text="Сегодня"
         android:textColor="@color/blue_main"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -26,7 +26,8 @@
         android:id="@+id/deleteAllTasksButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete all tasks" />
+        android:text="Delete all tasks"
+        android:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

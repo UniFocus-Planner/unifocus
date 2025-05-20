@@ -62,7 +62,6 @@ class EditTaskDialogFragment : DialogFragment() {
         val deadlineText = view.findViewById<TextView>(R.id.deadlineText)
         val notificationText = view.findViewById<TextView>(R.id.notificationText)
 
-        // Получаем deadline как LocalDateTime из аргументов
         selectedDeadline = arguments?.getSerializable("deadline") as? LocalDateTime
 
         selectedDeadline?.let {

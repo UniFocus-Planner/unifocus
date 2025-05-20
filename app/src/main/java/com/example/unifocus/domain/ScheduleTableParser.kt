@@ -5,23 +5,6 @@ import org.apache.poi.ss.usermodel.*
 import java.io.File
 import java.io.FileInputStream
 
-data class ScheduleItem(
-    val group: String,
-    val subgroup: String,
-    val day: String,
-    val lessonNum: String,
-    val subject: String,
-    val teachers: List<String>,
-    val rooms: List<String>,
-    val weekType: WeekType
-) {
-    enum class WeekType { ODD, EVEN }
-
-    fun print() {
-        Log.d(group, "Group: ${group}, subgroup: ${subgroup}, Day ${day}, Lesson Num ${lessonNum}, Subject ${subject}, WeekType ${weekType}, Teachers ${teachers}, Rooms ${rooms}")
-    }
-}
-
 class ScheduleTableParser {
 
     fun parse(filePath: String): Map<String, List<ScheduleItem>> {
@@ -49,7 +32,10 @@ class ScheduleTableParser {
         return scheduleData
     }
 
-    private fun parseSheet(sheet: Sheet, scheduleData: MutableMap<String, MutableList<ScheduleItem>>) {
+    private fun parseSheet(
+        sheet: Sheet,
+        scheduleData: MutableMap<String, MutableList<ScheduleItem>>)
+    {
         if (sheet.physicalNumberOfRows < 3) return
 
         val groupHeaderRow = sheet.getRow(0) ?: return
@@ -245,4 +231,17 @@ class ScheduleTableParser {
         val name: String,
         val column: Int
     )
+}
+
+data class ScheduleItem(
+    val group: String,
+    val subgroup: String,
+    val day: String,
+    val lessonNum: String,
+    val subject: String,
+    val teachers: List<String>,
+    val rooms: List<String>,
+    val weekType: WeekType
+) {
+    enum class WeekType { ODD, EVEN }
 }

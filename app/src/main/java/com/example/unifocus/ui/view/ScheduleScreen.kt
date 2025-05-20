@@ -50,16 +50,15 @@ class ScheduleScreen : Fragment() {
     private lateinit var todayHeader: TextView
     private lateinit var calendarContainer: LinearLayout
     private var currentCalendar: Calendar = Calendar.getInstance()
-    private var isAnimating = false // Флаг для предотвращения множественных свайпов
-    private var selectedDate: Calendar = Calendar.getInstance() // Выбранная дата
+    private var isAnimating = false
+    private var selectedDate: Calendar = Calendar.getInstance()
     private lateinit var toggleCalendarButton: ImageButton
     private var isCalendarExpanded = true
     private lateinit var repository: UniFocusRepository
-    private val days = mutableListOf<CalendarDay>() // Добавляем поле для хранения дней
+    private val days = mutableListOf<CalendarDay>()
     private lateinit var tasksList: RecyclerView
     private lateinit var viewModel: UniFocusViewModel
 
-    // Обработчик свайпов с nullable-параметрами
     private val gestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             @Suppress("NOTHING_TO_OVERRIDE", "ACCIDENTAL_OVERRIDE")
@@ -105,7 +104,6 @@ class ScheduleScreen : Fragment() {
             UniFocusViewModelFactory(repository) // Передаем фабрику с репозиторием
         )[UniFocusViewModel::class.java]
 
-        // Инициализация адаптера задач
         tasksList.layoutManager = LinearLayoutManager(requireContext())
         tasksList.adapter = TaskAdapter(
             onDeleteClick = {
@@ -180,7 +178,6 @@ class ScheduleScreen : Fragment() {
         }
     }
 
-    // Новый метод для сброса выбранной даты
     private fun resetSelectedDate() {
         selectedDate = Calendar.getInstance() // Сегодняшняя дата
         updateDateHeader()
@@ -288,7 +285,6 @@ class ScheduleScreen : Fragment() {
         }
     }
 
-    // Определение и запись сегодняшней даты в TextView today_header
     private fun updateDateHeader() {
         val pattern = if (isToday(selectedDate)) "Сегодня: d MMMM yyyy"
         else "Выбранная дата: d MMMM yyyy"
@@ -311,7 +307,6 @@ class ScheduleScreen : Fragment() {
         }
     }
 
-    // Функция перенесена из TodayTasksScreen
     private fun showEditTaskDialog(task: Task) {
         val dialog = EditTaskDialogFragment.newInstance(task)
         dialog.setOnTaskUpdatedListener(object : EditTaskDialogFragment.OnTaskUpdatedListener {
@@ -325,7 +320,6 @@ class ScheduleScreen : Fragment() {
         dialog.show(parentFragmentManager, "EditTaskDialog")
     }
 
-    // Функция перенесена из TodayTasksScreen
     fun rescheduleTaskNotification(task: Task) {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
             val channelID = "Unifocus"
@@ -339,14 +333,12 @@ class ScheduleScreen : Fragment() {
         }
     }
 
-    // Добавляем функцию в ScheduleScreen:
     private fun isToday(calendar: Calendar): Boolean {
         val today = Calendar.getInstance()
         return calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                 calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
     }
 
-    // Расширение для конвертации Calendar в LocalDateTime
     private fun Calendar.toLocalDateTime() = LocalDateTime.ofInstant(
         this.time.toInstant(),
         ZoneId.systemDefault()
