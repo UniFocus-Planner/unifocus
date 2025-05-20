@@ -1,5 +1,7 @@
 package com.example.unifocus.ui.view
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.GestureDetector
@@ -31,6 +33,7 @@ import com.example.unifocus.ui.adapter.TaskAdapter
 import com.example.unifocus.ui.decorators.VerticalSpaceItemDecoration
 import com.example.unifocus.ui.dialogues.EditTaskDialogFragment
 import com.example.unifocus.ui.viewmodels.UniFocusViewModel
+import com.example.unifocus.ui.viewmodels.UniFocusViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -94,7 +97,13 @@ class ScheduleScreen : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         repository = UniFocusRepository(UniFocusDatabase.getDatabase(requireContext()))
+
+        viewModel = ViewModelProvider(
+            this,
+            UniFocusViewModelFactory(repository) // Передаем фабрику с репозиторием
+        )[UniFocusViewModel::class.java]
 
         // Инициализация адаптера задач
         tasksList.layoutManager = LinearLayoutManager(requireContext())
