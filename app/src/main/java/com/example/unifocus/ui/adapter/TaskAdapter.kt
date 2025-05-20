@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.unifocus.R
 import com.example.unifocus.data.models.task.Task
+import java.time.format.DateTimeFormatter
 
 class TaskAdapter(
     private val onTaskClick: (Task) -> Unit,
@@ -24,6 +25,8 @@ class TaskAdapter(
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameView: TextView = itemView.findViewById(R.id.taskName)
 //        private val descView: TextView = itemView.findViewById(R.id.taskDesc)
+        private val roomView: TextView = itemView.findViewById(R.id.taskRoom)
+        private val deadlineView: TextView = itemView.findViewById(R.id.taskDeadline)
         private val teacherView: TextView = itemView.findViewById(R.id.taskTeacher)
         private val groupView: TextView = itemView.findViewById(R.id.taskGroup)
         private val editTask: ImageButton = itemView.findViewById(R.id.edit_button)
@@ -33,6 +36,8 @@ class TaskAdapter(
         fun bind(task: Task) {
             nameView.text = task.name
 //            descView.text = task.description ?: "—"
+            roomView.text = task.room ?: "—"
+            deadlineView.text = task.deadline?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
             teacherView.text = task.teacher ?: "—"
             groupView.text = task.group ?: "—"
 
