@@ -32,20 +32,41 @@
                 android:focusableInTouchMode="false"
                 android:text="Название задачи"
                 android:textColor="@color/blue_main"
+                android:fontFamily="@font/montserrat"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
-<!--            <TextView-->
-<!--                android:id="@+id/taskDesc"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="32dp"-->
-<!--                android:clickable="false"-->
-<!--                android:duplicateParentState="true"-->
-<!--                android:focusable="false"-->
-<!--                android:focusableInTouchMode="false"-->
-<!--                android:text="Описание"-->
-<!--                android:textColor="@color/blue_main"-->
-<!--                android:textSize="14sp" />-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/taskRoom"
+                    android:layout_width="208dp"
+                    android:layout_height="32dp"
+                    android:clickable="false"
+                    android:duplicateParentState="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:text="Аудитория"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/blue_main"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/taskDateTime"
+                    android:layout_width="148dp"
+                    android:layout_height="32dp"
+                    android:clickable="false"
+                    android:duplicateParentState="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:text="Дата"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/blue_main"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,6 +82,7 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:text="Преподаватель"
+                    android:fontFamily="@font/montserrat"
                     android:textColor="@color/blue_main"
                     android:textSize="14sp" />
 
@@ -73,6 +95,7 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:text="Группа"
+                    android:fontFamily="@font/montserrat"
                     android:textColor="@color/blue_main"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -83,7 +106,7 @@
             android:id="@+id/edit_button"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:layout_alignTop="@id/taskName"
+            android:layout_alignBottom="@id/taskDateTime"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="0dp"
             android:layout_marginBottom="1dp"
