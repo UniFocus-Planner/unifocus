@@ -118,7 +118,8 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:layout_marginTop="10dp" />
 
         <TextView
             android:id="@+id/loading_text"
@@ -129,7 +130,8 @@
             android:gravity="center"
             android:text="Загрузка..."
             android:textColor="@color/blue_main"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:layout_marginTop="5dp"/>
 
         <ProgressBar
             android:id="@+id/loading_ring"

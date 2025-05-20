@@ -15,7 +15,8 @@ import com.example.unifocus.R
 import com.example.unifocus.data.models.schedule.Schedule
 
 class ScheduleAdapter(
-    private val onDeleteClick: (Schedule) -> Unit
+    private val onDeleteClick: (Schedule) -> Unit,
+    private val onLoadingStateChanged: (Boolean) -> Unit
 ) : ListAdapter<Schedule, ScheduleAdapter.ScheduleViewHolder>(ScheduleDiffCallback()), Filterable {
 
     private var originalList: List<Schedule> = emptyList()
@@ -45,10 +46,10 @@ class ScheduleAdapter(
         }
     }
 
-
     class ScheduleViewHolder(
         scheduleView: View,
-        private val onDeleteClick: (Schedule) -> Unit
+        private val onDeleteClick: (Schedule) -> Unit,
+        private val onLoadingStateChanged: (Boolean) -> Unit
     ) : RecyclerView.ViewHolder(scheduleView) {
         private val nameView: TextView = scheduleView.findViewById(R.id.schedule_title)
         private val deleteButton: ImageButton = scheduleView.findViewById(R.id.schedule_delete_button)
@@ -66,8 +67,14 @@ class ScheduleAdapter(
 
             deleteButton.setOnClickListener {
                 onDeleteClick(schedule)
-                if (isAddMode) {
-                    Toast.makeText(itemView.context, "Расписание добавлено", Toast.LENGTH_SHORT).show()
+
+                //задержка для удаления
+                if (!isAddMode) {
+                    onLoadingStateChanged(true)
+                    deleteButton.postDelayed({
+                        onLoadingStateChanged(false)
+                        Toast.makeText(itemView.context, "Расписание обновлено", Toast.LENGTH_SHORT).show()
+                    }, 5000)
                 }
             }
         }
@@ -75,7 +82,7 @@ class ScheduleAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.schedule_item, parent, false)
-        return ScheduleViewHolder(view, onDeleteClick)
+        return ScheduleViewHolder(view, onDeleteClick, onLoadingStateChanged)
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {

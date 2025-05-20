@@ -59,17 +59,36 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         val repository = (requireActivity().application as UniFocusApp).repository
         val factory = UniFocusViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[UniFocusViewModel::class.java]
-        adapter = ScheduleAdapter {
-            viewModel.selectSchedule(it.groupName, false)
-            viewModel.selectScheduleTasks(it, false)
-        }
+
+        adapter = ScheduleAdapter(
+            onDeleteClick = { schedule ->
+                viewModel.selectSchedule(schedule.groupName, false)
+                viewModel.selectScheduleTasks(schedule, false)
+            },
+            onLoadingStateChanged = { isLoading ->
+                updateButton.isEnabled = !isLoading
+                addScheduleButton.isEnabled = !isLoading
+                (activity as? MainActivity)?.setNavigationLock(isLoading)
+
+                if (isLoading) {
+                    loadingRing.visibility = View.VISIBLE
+                    loadingText.visibility = View.VISIBLE
+                    progressBar.visibility = View.INVISIBLE
+                    loadingText.text = "Обновление списка занятий..."
+                } else {
+                    loadingRing.visibility = View.GONE
+                    loadingText.visibility = View.GONE
+                    progressBar.visibility = View.GONE
+                    loadingText.text = "Загрузка..."
+                }
+            }
+        )
 
         downloader = ScheduleTableDownloader()
         progressBar = view.findViewById(R.id.progressBar)
         updateButton = view.findViewById(R.id.update_tables_button)
         loadingRing = view.findViewById(R.id.loading_ring)
         loadingText = view.findViewById(R.id.loading_text)
-
         addScheduleButton = view.findViewById(R.id.add_schedule)
 
         updateButton.isEnabled = true
@@ -81,10 +100,8 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.adapter = adapter
 
-        addScheduleButton.also {
-            it.setOnClickListener {
-                showCreateScheduleDialog()
-            }
+        addScheduleButton.setOnClickListener {
+            showCreateScheduleDialog()
         }
 
         viewModel.selectedSchedules.observe(viewLifecycleOwner, { schedules ->
@@ -98,7 +115,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         return view
     }
 
-    // анимация прогресса
     private fun completeProgressWithAnimation() {
         val animator = ObjectAnimator.ofInt(
             progressBar,
@@ -106,8 +122,8 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
             progressBar.progress,
             progressBar.max
         ).apply {
-            duration = 10000 // миллисекунды
-            interpolator = DecelerateInterpolator() // плавная анимация
+            duration = 10000
+            interpolator = DecelerateInterpolator()
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     progressBar.visibility = View.GONE
@@ -122,9 +138,7 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
     }
 
     private fun startDownloadProcess() {
-        //лок навигации
         (activity as? MainActivity)?.setNavigationLock(true)
-
         updateButton.isEnabled = false
         addScheduleButton.isEnabled = false
         progressBar.progress = 0
@@ -133,7 +147,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         loadingRing.visibility = View.VISIBLE
         loadingText.visibility = View.VISIBLE
 
-        // скачивание и замена
         Toast.makeText(requireContext(), "Обновление расписания...", Toast.LENGTH_LONG).show()
         val tablesToDownload = listOf(
             Pair("schedule_itkn.xls", "https://misis.ru/files/-/262aaeaf7b610a2c2ed0d5365596f5f6/itkn_120325.xls"),
@@ -152,7 +165,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         val results = AtomicInteger(0)
         val errors = mutableListOf<String>()
 
-        // общий таймаут (1 минута)
         timeoutRunnable = Runnable {
             if (latch.count > 0) {
                 Toast.makeText(context, "Превышено время ожидания загрузки. Проверьте подключение к интернету", Toast.LENGTH_SHORT).show()
@@ -169,7 +181,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                 timeoutMillis = 20000,
                 progressCallback = { progress ->
                     activity?.runOnUiThread {
-                        // общий прогресс
                         val currentProgress = progressBar.progress
                         val newProgress = currentProgress + (progress / tablesToDownload.size)
                         progressBar.progress = newProgress
@@ -191,7 +202,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
             handler.removeCallbacks(timeoutRunnable!!)
 
             activity?.runOnUiThread {
-                // сбор данных по всем скачанным таблицам
                 val tablePathNames = tablesToDownload.map { (fileName, _) ->
                     "${context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)}/$fileName"
                 }
@@ -220,7 +230,6 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                     }
                 }
 
-                // обновление в ViewModel
                 val teachers = scheduleRepository.getAllTeachers()
                 val groups = scheduleRepository.getAllGroups()
 
@@ -239,15 +248,12 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
                     viewModel.createSchedule(group)
                 }
 
-                // задержка 10 секунд перед разблокировкой навигации
-                Log.d("Delay", "10 SEC DELAY")
                 handler.postDelayed({
                     updateButton.isEnabled = true
                     addScheduleButton.isEnabled = true
                     progressBar.visibility = View.GONE
                     loadingRing.visibility = View.GONE
                     loadingText.visibility = View.GONE
-
                     completeProgressWithAnimation()
                     (activity as? MainActivity)?.setNavigationLock(false)
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -260,15 +266,34 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
     private fun cancelDownloadProcess() {
         downloader.cancelAllDownloads()
         handler.removeCallbacks(timeoutRunnable!!)
-
         completeProgressWithAnimation()
         (activity as? MainActivity)?.setNavigationLock(false)
     }
 
     private fun showCreateScheduleDialog() {
-        val dialog = CreateScheduleDialogue.newInstance()
-        dialog.setOnScheduleCreatedListener(this)
-        dialog.show(parentFragmentManager, "CreateScheduleDialog")
+        val dialog = CreateScheduleDialogue().apply {
+            setOnLoadingStateChangedListener { isLoading ->
+                if (isLoading) {
+                    progressBar.visibility = View.INVISIBLE
+                    loadingRing.visibility = View.VISIBLE
+                    loadingText.visibility = View.VISIBLE
+                    loadingText.text = "Добавление расписания..."
+
+                    updateButton.isEnabled = false
+                    addScheduleButton.isEnabled = false
+                    (activity as? MainActivity)?.setNavigationLock(true)
+                } else {
+                    progressBar.visibility = View.GONE
+                    loadingRing.visibility = View.GONE
+                    loadingText.visibility = View.GONE
+
+                    updateButton.isEnabled = true
+                    addScheduleButton.isEnabled = true
+                    (activity as? MainActivity)?.setNavigationLock(false)
+                }
+            }
+        }
+        dialog.show(parentFragmentManager, "CreateScheduleDialogue")
     }
 
     override fun onScheduleCreated(task: Task) {
@@ -279,11 +304,9 @@ class ProfileScreen : Fragment(), CreateScheduleDialogue.OnScheduleCreatedListen
         if (::downloader.isInitialized) {
             downloader.cancelAllDownloads()
         }
-
         timeoutRunnable?.let {
             handler.removeCallbacks(it)
         }
-
         timeoutRunnable = null
         super.onDestroyView()
         handler.removeCallbacksAndMessages(null)
