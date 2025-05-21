@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 
 class CalendarAdapter(
     initialDays: List<CalendarDay>,
-    private val onDayClick: (CalendarDay) -> Unit // Добавляем колбэк
+    private val onDayClick: (CalendarDay) -> Unit
 ) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
 
     private var selectedPosition = -1
@@ -21,7 +21,6 @@ class CalendarAdapter(
     private var days: MutableList<CalendarDay> = initialDays.toMutableList()
 
     init {
-        // Инициализация позиции сегодняшнего дня
         days.forEachIndexed { index, day ->
             if (day.isToday) {
                 todayPosition = index
@@ -49,11 +48,9 @@ class CalendarAdapter(
         holder.dayNumber.text = day.number.toString()
         holder.dayHighlight.visibility = if (day.isToday) View.VISIBLE else View.INVISIBLE
 
-        // Обновление видимости маркеров
         holder.daySelected.visibility = if (position == selectedPosition && !day.isToday) View.VISIBLE else View.INVISIBLE
         holder.taskDot.visibility = if (day.hasTasks) View.VISIBLE else View.GONE
 
-        // Цвет текста
         when {
             day.isToday -> holder.dayNumber.setTextColor(Color.WHITE)
             position == selectedPosition -> holder.dayNumber.setTextColor(Color.WHITE)
@@ -67,7 +64,7 @@ class CalendarAdapter(
             val currentPosition = holder.bindingAdapterPosition
             if (currentPosition != RecyclerView.NO_POSITION && currentPosition != selectedPosition) {
                 selectedPosition = currentPosition
-                onDayClick(days[currentPosition]) // Используем актуальную позицию
+                onDayClick(days[currentPosition])
                 notifyDataSetChanged()
             }
         }
@@ -78,15 +75,13 @@ class CalendarAdapter(
         days.clear()
         days.addAll(newDays)
 
-        // Сбрасываем выделение при обновлении
         selectedPosition = -1
         todayPosition = -1
 
-        // Обновляем позиции сегодняшнего дня
         days.forEachIndexed { index, day ->
             if (day.isToday) {
                 todayPosition = index
-                selectedPosition = index // Автовыбор сегодняшнего дня
+                selectedPosition = index
             }
         }
 

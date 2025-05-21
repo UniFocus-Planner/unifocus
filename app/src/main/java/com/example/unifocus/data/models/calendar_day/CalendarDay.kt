@@ -7,5 +7,5 @@ data class CalendarDay(
     val isToday: Boolean,
     val isCurrentMonth: Boolean,
     val date: Calendar = Calendar.getInstance(),
-    var hasTasks: Boolean = false // Новое поле для отметки задач
+    var hasTasks: Boolean = false
 )

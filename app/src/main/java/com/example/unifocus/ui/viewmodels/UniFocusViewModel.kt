@@ -39,7 +39,6 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
 
     fun createTask(
         name: String,
-//        description: String? = null,
         deadline: LocalDateTime? = null,
         notificationTime: Calendar? = null,
         notificationId: Int? = null,
@@ -54,7 +53,6 @@ class UniFocusViewModel(private val repository: UniFocusRepository) : ViewModel(
         additionalInformation: String? = null
     ): Task {
         val task = TaskFactory.createTask( name = name,
-//            description = description,
             deadline = deadline,
             notificationTime = notificationTime,
             taskType = taskType,

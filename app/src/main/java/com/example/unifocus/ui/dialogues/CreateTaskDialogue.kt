@@ -46,7 +46,6 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val nameInput = view.findViewById<TextView>(R.id.name_task_edit)
-//        val descInput = view.findViewById<TextView>(R.id.description_task)
         val additionalInformation = view.findViewById<TextView>(R.id.notes_task)
         val createButton = view.findViewById<Button>(R.id.button_task)
         val deadlineText = view.findViewById<TextView>(R.id.deadlineText)
@@ -74,7 +73,6 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
             if (name.isNotEmpty()) {
                 val task = TaskFactory.createTask(
                     name = name,
-//                    description = descInput.text.toString(),
                     deadline = selectedDeadline,
                     notificationTime = selectedNotificationTime,
                     taskType = TaskType.CLASS,

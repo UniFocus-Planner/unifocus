@@ -180,7 +180,6 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
         return lessonDates.map { lessonDate ->
             viewModel.createTask(
                 name = scheduleItem.subject,
-//                description = "Пара ${scheduleItem.lessonNum}",
                 deadline = getLessonStartTime(lessonDate, scheduleItem.lessonNum.toInt()),
                 taskType = TaskType.CLASS,
                 room = scheduleItem.rooms.joinToString(", "),

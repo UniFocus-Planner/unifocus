@@ -1,6 +1,5 @@
 package com.example.unifocus.ui.view
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -59,7 +58,6 @@ class ScheduleScreen : Fragment() {
     private lateinit var tasksList: RecyclerView
     private lateinit var viewModel: UniFocusViewModel
 
-    // Обработчик свайпов с nullable-параметрами
     private val gestureDetector by lazy {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             @Suppress("NOTHING_TO_OVERRIDE", "ACCIDENTAL_OVERRIDE")
@@ -102,10 +100,9 @@ class ScheduleScreen : Fragment() {
 
         viewModel = ViewModelProvider(
             this,
-            UniFocusViewModelFactory(repository) // Передаем фабрику с репозиторием
+            UniFocusViewModelFactory(repository)
         )[UniFocusViewModel::class.java]
 
-        // Инициализация адаптера задач
         tasksList.layoutManager = LinearLayoutManager(requireContext())
         tasksList.adapter = TaskAdapter(
             onDeleteClick = {
@@ -118,8 +115,7 @@ class ScheduleScreen : Fragment() {
 
         tasksList.addItemDecoration(VerticalSpaceItemDecoration(16))
 
-        // Устанавливаем начальную дату и загружаем задачи
-        selectedDate = Calendar.getInstance() // Сегодняшняя дата
+        selectedDate = Calendar.getInstance()
         updateDateHeader()
         loadTasksForSelectedDate()
 
@@ -127,19 +123,16 @@ class ScheduleScreen : Fragment() {
         setupCalendar()
 
         calendarGrid.adapter = CalendarAdapter(days) { clickedDay ->
-            // Обработка клика по дню
             selectedDate = clickedDay.date
             updateDateHeader()
             loadTasksForSelectedDate()
         }
 
-        // Обработка свайпов
         calendarGrid.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)
             true
         }
 
-        // Добавляем обработчик клика
         toggleCalendarButton.setOnClickListener {
             toggleCalendarVisibility()
         }
@@ -154,7 +147,6 @@ class ScheduleScreen : Fragment() {
             else R.drawable.ic_arrow_down
         )
 
-        // Анимация для плавного перехода
         val transition = TransitionInflater.from(requireContext())
             .inflateTransition(android.R.transition.move)
         TransitionManager.beginDelayedTransition(calendarContainer as ViewGroup, transition)
@@ -180,12 +172,11 @@ class ScheduleScreen : Fragment() {
         }
     }
 
-    // Новый метод для сброса выбранной даты
     private fun resetSelectedDate() {
-        selectedDate = Calendar.getInstance() // Сегодняшняя дата
+        selectedDate = Calendar.getInstance()
         updateDateHeader()
         loadTasksForSelectedDate()
-        calendarGrid.adapter?.notifyDataSetChanged() // Обновляем календарь
+        calendarGrid.adapter?.notifyDataSetChanged()
     }
 
     private fun startAnimation(
@@ -222,26 +213,21 @@ class ScheduleScreen : Fragment() {
         val tempCalendar = currentCalendar.clone() as Calendar
         val today = Calendar.getInstance()
 
-        // Очищаем предыдущие данные
         days.clear()
 
-        // Сброс на первый день текущего месяца
         tempCalendar.set(Calendar.DAY_OF_MONTH, 1)
         val firstDayOfWeek = tempCalendar.get(Calendar.DAY_OF_WEEK)
 
-        // Расчет дней предыдущего месяца
         tempCalendar.add(Calendar.MONTH, -1)
         val daysInPrevMonth = tempCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         val daysBefore = (firstDayOfWeek - Calendar.MONDAY + 7) % 7
 
-        // Добавление дней предыдущего месяца
         for (i in daysInPrevMonth - daysBefore + 1..daysInPrevMonth) {
             val date = tempCalendar.clone() as Calendar
             date.set(Calendar.DAY_OF_MONTH, i)
             days.add(CalendarDay(i, false, false, date))
         }
 
-        // Добавление дней текущего месяца
         tempCalendar.add(Calendar.MONTH, 1)
         val daysInMonth = tempCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         for (i in 1..daysInMonth) {
@@ -254,8 +240,7 @@ class ScheduleScreen : Fragment() {
                 date))
         }
 
-        // Добавление дней следующего месяца
-        val totalCells = 42 // 6 недель
+        val totalCells = 42
         val daysToAdd = totalCells - days.size
         tempCalendar.add(Calendar.MONTH, 1)
         for (i in 1..daysToAdd) {
@@ -264,7 +249,6 @@ class ScheduleScreen : Fragment() {
             days.add(CalendarDay(i, false, false, date))
         }
 
-        // Обновление адаптера
         calendarGrid.layoutManager = GridLayoutManager(requireContext(), 7)
         (calendarGrid.adapter as? CalendarAdapter)?.updateDays(days) ?: run {
             calendarGrid.adapter = CalendarAdapter(days) { clickedDay ->
@@ -274,7 +258,6 @@ class ScheduleScreen : Fragment() {
             }
         }
 
-        // Загрузка задач
         viewLifecycleOwner.lifecycleScope.launch {
             repository.selectedTasks.collect {
                 days.forEach { day ->
@@ -288,30 +271,27 @@ class ScheduleScreen : Fragment() {
         }
     }
 
-    // Определение и запись сегодняшней даты в TextView today_header
     private fun updateDateHeader() {
         val pattern = if (isToday(selectedDate)) "Сегодня: d MMMM yyyy"
         else "Выбранная дата: d MMMM yyyy"
 
-        // Исправляем назначение текста в today_header
         todayHeader.text = SimpleDateFormat(pattern, Locale("ru")).format(selectedDate.time)
     }
 
     private fun loadTasksForSelectedDate() {
-        viewLifecycleOwner.lifecycleScope.launch { // Добавляем импорт для launch
+        viewLifecycleOwner.lifecycleScope.launch {
             val start = selectedDate.toLocalDateTime().withHour(0)
             val end = selectedDate.toLocalDateTime().withHour(23).withMinute(59)
 
             repository.getTodaySelectedTasks(
                 Converters().dateToTimestamp(start)!!,
                 Converters().dateToTimestamp(end)!!
-            ).collect { tasks -> // Коллектим Flow
+            ).collect { tasks ->
                 (tasksList.adapter as? TaskAdapter)?.submitList(tasks)
             }
         }
     }
 
-    // Функция перенесена из TodayTasksScreen
     private fun showEditTaskDialog(task: Task) {
         val dialog = EditTaskDialogFragment.newInstance(task)
         dialog.setOnTaskUpdatedListener(object : EditTaskDialogFragment.OnTaskUpdatedListener {
@@ -325,7 +305,6 @@ class ScheduleScreen : Fragment() {
         dialog.show(parentFragmentManager, "EditTaskDialog")
     }
 
-    // Функция перенесена из TodayTasksScreen
     fun rescheduleTaskNotification(task: Task) {
         viewModel.viewModelScope.launch(Dispatchers.IO) {
             val channelID = "Unifocus"
@@ -339,14 +318,12 @@ class ScheduleScreen : Fragment() {
         }
     }
 
-    // Добавляем функцию в ScheduleScreen:
     private fun isToday(calendar: Calendar): Boolean {
         val today = Calendar.getInstance()
         return calendar.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                 calendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
     }
 
-    // Расширение для конвертации Calendar в LocalDateTime
     private fun Calendar.toLocalDateTime() = LocalDateTime.ofInstant(
         this.time.toInstant(),
         ZoneId.systemDefault()

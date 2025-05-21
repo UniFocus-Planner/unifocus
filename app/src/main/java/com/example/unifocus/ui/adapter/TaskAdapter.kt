@@ -24,7 +24,6 @@ class TaskAdapter(
         private val onDeleteClick: (Task) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         private val nameView: TextView = itemView.findViewById(R.id.taskName)
-//        private val descView: TextView = itemView.findViewById(R.id.taskDesc)
         private val roomView: TextView = itemView.findViewById(R.id.taskRoom)
         private val deadlineView: TextView = itemView.findViewById(R.id.taskDeadline)
         private val teacherView: TextView = itemView.findViewById(R.id.taskTeacher)
@@ -35,7 +34,6 @@ class TaskAdapter(
 
         fun bind(task: Task) {
             nameView.text = task.name
-//            descView.text = task.description ?: ""
             roomView.text = task.room ?: ""
             deadlineView.text = task.deadline?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
             teacherView.text = task.teacher ?: ""

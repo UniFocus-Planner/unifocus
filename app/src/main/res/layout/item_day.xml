@@ -12,7 +12,6 @@
         android:layout_height="40dp"
         android:gravity="center">
 
-        <!-- Метка сегодняшнего дня -->
         <View
             android:id="@+id/day_highlight"
             android:layout_width="match_parent"
@@ -20,7 +19,6 @@
             android:visibility="invisible"
             android:background="@drawable/bg_current_day"/>
 
-        <!-- Метка выбранной даты -->
         <View
             android:id="@+id/day_selected"
             android:layout_width="match_parent"
@@ -38,7 +36,6 @@
             android:includeFontPadding="false"
             android:layout_gravity="center"/>
 
-        <!-- Метка задач (исправленное позиционирование) -->
         <View
             android:id="@+id/task_dot"
             android:layout_width="4dp"
