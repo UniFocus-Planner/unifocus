@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 
 class CalendarAdapter(
     initialDays: List<CalendarDay>,
-    private val onDayClick: (CalendarDay) -> Unit // Добавляем колбэк
+    private val onDayClick: (CalendarDay) -> Unit
 ) : RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
 
     private var selectedPosition = -1
@@ -64,7 +64,7 @@ class CalendarAdapter(
             val currentPosition = holder.bindingAdapterPosition
             if (currentPosition != RecyclerView.NO_POSITION && currentPosition != selectedPosition) {
                 selectedPosition = currentPosition
-                onDayClick(days[currentPosition]) // Используем актуальную позицию
+                onDayClick(days[currentPosition])
                 notifyDataSetChanged()
             }
         }
@@ -75,15 +75,13 @@ class CalendarAdapter(
         days.clear()
         days.addAll(newDays)
 
-        // Сбрасываем выделение при обновлении
         selectedPosition = -1
         todayPosition = -1
 
-        // Обновляем позиции сегодняшнего дня
         days.forEachIndexed { index, day ->
             if (day.isToday) {
                 todayPosition = index
-                selectedPosition = index // Автовыбор сегодняшнего дня
+                selectedPosition = index
             }
         }
 

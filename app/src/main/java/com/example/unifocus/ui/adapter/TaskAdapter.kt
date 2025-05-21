@@ -34,7 +34,6 @@ class TaskAdapter(
 
         fun bind(task: Task) {
             nameView.text = task.name
-//            descView.text = task.description ?: ""
             roomView.text = task.room ?: ""
             deadlineView.text = task.deadline?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
             teacherView.text = task.teacher ?: ""

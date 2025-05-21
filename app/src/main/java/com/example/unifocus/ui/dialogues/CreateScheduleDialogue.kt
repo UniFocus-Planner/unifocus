@@ -21,7 +21,6 @@ class CreateScheduleDialogue : DialogFragment() {
     private var listener: OnScheduleCreatedListener? = null
     private lateinit var adapter: ScheduleAdapter
     private lateinit var viewModel: UniFocusViewModel
-    private var onLoadingStateChanged: ((Boolean) -> Unit)? = null
 
     interface OnScheduleCreatedListener {
         fun onScheduleCreated(task: Task)
@@ -31,15 +30,7 @@ class CreateScheduleDialogue : DialogFragment() {
         this.listener = listener
     }
 
-    fun setOnLoadingStateChangedListener(listener: (Boolean) -> Unit) {
-        this.onLoadingStateChanged = listener
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.schedule_list_dialogue, container, false)
     }
 
@@ -53,36 +44,10 @@ class CreateScheduleDialogue : DialogFragment() {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerViewSchedules)
         val searchView = view.findViewById<SearchView>(R.id.searchView)
 
-        adapter = ScheduleAdapter(
-            onDeleteClick = { schedule ->
-                onLoadingStateChanged?.invoke(true)
-                Toast.makeText(
-                    requireContext(),
-                    "Добавляем расписание...",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-                viewModel.selectSchedule(schedule.groupName, true)
-                viewModel.selectScheduleTasks(schedule, true)
-
-                view.post {
-                    dialog?.hide()
-
-                    requireActivity().window.decorView.postDelayed({
-                        if (isAdded) {
-                            onLoadingStateChanged?.invoke(false)
-                            Toast.makeText(
-                                requireContext(),
-                                "Расписание успешно добавлено",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            dismiss()
-                        }
-                    }, 5000)
-                }
-            },
-            onLoadingStateChanged = {}
-        )
+        adapter = ScheduleAdapter { schedule ->
+            viewModel.selectSchedule(schedule.groupName, true)
+            viewModel.selectScheduleTasks(schedule, true)
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
@@ -90,11 +55,7 @@ class CreateScheduleDialogue : DialogFragment() {
         viewModel.schedules.observe(viewLifecycleOwner) { list ->
             adapter.submitData(list)
             if (list.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Обновите таблицы расписания",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Обновите таблицы расписания", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -109,10 +70,7 @@ class CreateScheduleDialogue : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     companion object {

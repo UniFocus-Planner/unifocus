@@ -44,92 +44,6 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
         }
     }
 
-    fun parseDayOfWeek(dayString: String): DayOfWeek {
-        return when (dayString) {
-            "Понедельник" -> DayOfWeek.MONDAY
-            "Вторник" -> DayOfWeek.TUESDAY
-            "Среда" -> DayOfWeek.WEDNESDAY
-            "Четверг" -> DayOfWeek.THURSDAY
-            "Пятница" -> DayOfWeek.FRIDAY
-            "Суббота" -> DayOfWeek.SATURDAY
-            "Воскресенье" -> DayOfWeek.SUNDAY
-            else -> throw IllegalArgumentException("Неизвестный день недели: $dayString")
-        }
-    }
-
-    fun getLessonStartTime(date: LocalDate, lessonNumber: Int): LocalDateTime {
-        return when (lessonNumber) {
-            1 -> date.atTime(9, 0)
-            2 -> date.atTime(10, 50)
-            3 -> date.atTime(12, 40)
-            4 -> date.atTime(14, 30)
-            5 -> date.atTime(16, 20)
-            6 -> date.atTime(18, 5)
-            7 -> date.atTime(19, 50)
-            else -> throw IllegalArgumentException("Номер пары должен быть от 1 до 7 " + lessonNumber)
-        }
-    }
-
-    fun parseScheduleItemToTask(scheduleItem: ScheduleItem, viewModel: UniFocusViewModel, schedule: List<String>): List<Task> {
-        if (scheduleItem.rooms.isEmpty()) return mutableListOf()
-        if (scheduleItem.teachers.isEmpty()) return mutableListOf()
-
-        val startDate = LocalDate.of(2025, 2, 5)
-        val dayOfWeek = parseDayOfWeek(scheduleItem.day)
-
-        val lessonDates = calculateLessonDates(
-            startDate = startDate,
-            dayOfWeek = dayOfWeek,
-            weekType = scheduleItem.weekType,
-            totalWeeks = 16
-        )
-
-        return lessonDates.map { lessonDate ->
-            viewModel.createTask(
-                name = scheduleItem.subject,
-//                description = "Пара ${scheduleItem.lessonNum}",
-                deadline = getLessonStartTime(lessonDate, scheduleItem.lessonNum.toInt()),
-                taskType = TaskType.CLASS,
-                room = scheduleItem.rooms.joinToString(", "),
-                teacher = scheduleItem.teachers.joinToString(", "),
-                weekType = scheduleItem.weekType,
-                number = scheduleItem.lessonNum.toInt(),
-                schedule = schedule,
-                group = scheduleItem.group,
-                selected = false,
-                additionalInformation = ""
-            )
-        }
-    }
-
-    fun calculateLessonDates(
-        startDate: LocalDate,
-        dayOfWeek: DayOfWeek,
-        weekType: ScheduleItem.WeekType?,
-        totalWeeks: Int = 1,
-        isOddWeekStart: Boolean = true
-    ): List<LocalDate>
-    {
-        val dates = mutableListOf<LocalDate>()
-        var currentDate = startDate.with(TemporalAdjusters.nextOrSame(dayOfWeek))
-
-        for (week in 0 until totalWeeks) {
-            val isOddWeek = if (isOddWeekStart) week % 2 == 0 else week % 2 == 1
-
-            if (
-                weekType == null ||
-                (weekType == ScheduleItem.WeekType.ODD && isOddWeek) ||
-                (weekType == ScheduleItem.WeekType.EVEN && !isOddWeek)
-            ) {
-                dates.add(currentDate)
-            }
-
-            currentDate = currentDate.plusWeeks(1)
-        }
-
-        return dates
-    }
-
     // с подгруппой (например не БПИ-22-РП-3, а БПИ-22-РП-3_1)
     fun filterByFullGroupName(fullGroupName: String): List<ScheduleItem> {
         return parsedSchedules[fullGroupName] ?: emptyList()
@@ -194,5 +108,89 @@ class ScheduleRepository(private val parsedSchedules: Map<String, List<ScheduleI
         }
 
         return result
+    }
+
+    fun parseDayOfWeek(dayString: String): DayOfWeek {
+        return when (dayString) {
+            "Понедельник" -> DayOfWeek.MONDAY
+            "Вторник" -> DayOfWeek.TUESDAY
+            "Среда" -> DayOfWeek.WEDNESDAY
+            "Четверг" -> DayOfWeek.THURSDAY
+            "Пятница" -> DayOfWeek.FRIDAY
+            "Суббота" -> DayOfWeek.SATURDAY
+            "Воскресенье" -> DayOfWeek.SUNDAY
+            else -> throw IllegalArgumentException("Неизвестный день недели: $dayString")
+        }
+    }
+
+    fun calculateLessonDates(
+        startDate: LocalDate,
+        dayOfWeek: DayOfWeek,
+        weekType: ScheduleItem.WeekType?,
+        totalWeeks: Int = 1,
+        isOddWeekStart: Boolean = true
+    ): List<LocalDate> {
+        val dates = mutableListOf<LocalDate>()
+        var currentDate = startDate.with(TemporalAdjusters.nextOrSame(dayOfWeek))
+
+        for (week in 0 until totalWeeks) {
+            val isOddWeek = if (isOddWeekStart) week % 2 == 0 else week % 2 == 1
+
+            if (
+                weekType == null ||
+                (weekType == ScheduleItem.WeekType.ODD && isOddWeek) ||
+                (weekType == ScheduleItem.WeekType.EVEN && !isOddWeek)
+            ) {
+                dates.add(currentDate)
+            }
+
+            currentDate = currentDate.plusWeeks(1)
+        }
+
+        return dates
+        }
+
+    fun getLessonStartTime(date: LocalDate, lessonNumber: Int): LocalDateTime {
+        return when (lessonNumber) {
+            1 -> date.atTime(9, 0)
+            2 -> date.atTime(10, 50)
+            3 -> date.atTime(12, 40)
+            4 -> date.atTime(14, 30)
+            5 -> date.atTime(16, 20)
+            6 -> date.atTime(18, 5)
+            7 -> date.atTime(19, 50)
+            else -> throw IllegalArgumentException("Номер пары должен быть от 1 до 7 " + lessonNumber)
+        }
+    }
+
+    fun parseScheduleItemToTask(scheduleItem: ScheduleItem, viewModel: UniFocusViewModel, schedule: List<String>): List<Task> {
+        if (scheduleItem.rooms.isEmpty()) return mutableListOf()
+        if (scheduleItem.teachers.isEmpty()) return mutableListOf()
+
+        val startDate = LocalDate.of(2025, 2, 5)
+        val dayOfWeek = parseDayOfWeek(scheduleItem.day)
+
+        val lessonDates = calculateLessonDates(
+            startDate = startDate,
+            dayOfWeek = dayOfWeek,
+            weekType = scheduleItem.weekType,
+            totalWeeks = 16
+        )
+
+        return lessonDates.map { lessonDate ->
+            viewModel.createTask(
+                name = scheduleItem.subject,
+                deadline = getLessonStartTime(lessonDate, scheduleItem.lessonNum.toInt()),
+                taskType = TaskType.CLASS,
+                room = scheduleItem.rooms.joinToString(", "),
+                teacher = scheduleItem.teachers.joinToString(", "),
+                weekType = scheduleItem.weekType,
+                number = scheduleItem.lessonNum.toInt(),
+                schedule = schedule,
+                group = scheduleItem.group,
+                selected = false,
+                additionalInformation = ""
+            )
+        }
     }
 }

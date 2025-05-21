@@ -41,19 +41,16 @@ class EditTaskDialogFragment : DialogFragment() {
         val view: View = LayoutInflater.from(context).inflate(R.layout.dialog_edit_task, null)
 
         val nameEditText = view.findViewById<TextView>(R.id.name_task_edit)
-//        val descEditText = view.findViewById<TextView>(R.id.description_task)
         val notes = view.findViewById<TextView>(R.id.notes_task)
         val teacher = view.findViewById<TextView>(R.id.teacher_task)
 
         val taskId = requireArguments().getInt("id")
         val name = requireArguments().getString("name") ?: ""
-//        val desc = requireArguments().getString("description")
         val teach = requireArguments().getString("teacher")
         val typeOrdinal = requireArguments().getInt("taskTypeOrdinal")
         val addInfo = requireArguments().getString("additionalInformation")
 
         nameEditText.setText(name)
-//        descEditText.setText(desc ?: "")
         teacher.setText(teach ?: "")
         notes.setText(addInfo ?: "")
 
@@ -89,7 +86,6 @@ class EditTaskDialogFragment : DialogFragment() {
                 val updatedTask = Task(
                     id = taskId,
                     name = taskNewName,
-//                    description = descEditText.text.toString(),
                     deadline = selectedDeadline,
                     notificationTime = selectedNotificationTime,
                     taskType = TaskType.values()[typeOrdinal],
@@ -190,7 +186,6 @@ class EditTaskDialogFragment : DialogFragment() {
             val args = Bundle().apply {
                 putInt("id", task.id)
                 putString("name", task.name)
-//                putString("description", task.description)
                 putInt("taskTypeOrdinal", task.taskType.ordinal)
                 putSerializable("deadline", task.deadline)
                 putSerializable("notificationTime", task.notificationTime)
