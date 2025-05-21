@@ -49,12 +49,12 @@ class ScheduleScreen : Fragment() {
     private lateinit var todayHeader: TextView
     private lateinit var calendarContainer: LinearLayout
     private var currentCalendar: Calendar = Calendar.getInstance()
-    private var isAnimating = false // Флаг для предотвращения множественных свайпов
-    private var selectedDate: Calendar = Calendar.getInstance() // Выбранная дата
+    private var isAnimating = false
+    private var selectedDate: Calendar = Calendar.getInstance()
     private lateinit var toggleCalendarButton: ImageButton
     private var isCalendarExpanded = true
     private lateinit var repository: UniFocusRepository
-    private val days = mutableListOf<CalendarDay>() // Добавляем поле для хранения дней
+    private val days = mutableListOf<CalendarDay>()
     private lateinit var tasksList: RecyclerView
     private lateinit var viewModel: UniFocusViewModel
 
@@ -62,12 +62,12 @@ class ScheduleScreen : Fragment() {
         GestureDetector(requireContext(), object : GestureDetector.SimpleOnGestureListener() {
             @Suppress("NOTHING_TO_OVERRIDE", "ACCIDENTAL_OVERRIDE")
             override fun onFling(
-                e1: MotionEvent?, // Допускаем null
+                e1: MotionEvent?,
                 e2: MotionEvent,
                 velocityX: Float,
                 velocityY: Float
             ): Boolean {
-                if (e1 == null) return false // Проверка на null
+                if (e1 == null) return false
                 if (abs(velocityX) > 1000) {
                     if (e2.x - e1.x > 0) showPreviousMonth() else showNextMonth()
                     return true
