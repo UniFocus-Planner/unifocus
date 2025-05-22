@@ -128,9 +128,11 @@ class EditTaskDialogFragment : DialogFragment() {
 
         DatePickerDialog(
             requireContext(),
+            R.style.CustomDatePickerDialogTheme,
             { _, year, month, day ->
                 TimePickerDialog(
                     requireContext(),
+                    R.style.CustomTimePickerDialogTheme,
                     { _, hour, minute ->
                         selectedDeadline = LocalDateTime.of(year, month + 1, day, hour, minute)
                         deadlineText.text = selectedDeadline?.format(
@@ -153,9 +155,11 @@ class EditTaskDialogFragment : DialogFragment() {
 
         DatePickerDialog(
             requireContext(),
+            R.style.CustomDatePickerDialogTheme,
             { _, year, month, day ->
                 TimePickerDialog(
                     requireContext(),
+                    R.style.CustomTimePickerDialogTheme,
                     { _, hour, minute ->
                         selectedNotificationTime = Calendar.getInstance().apply {
                             set(Calendar.YEAR, year)

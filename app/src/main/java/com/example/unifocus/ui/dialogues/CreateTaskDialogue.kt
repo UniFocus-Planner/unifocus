@@ -108,9 +108,11 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
 
         DatePickerDialog(
             requireContext(),
+            R.style.CustomDatePickerDialogTheme,
             { _, year, month, day ->
                 TimePickerDialog(
                     requireContext(),
+                    R.style.CustomTimePickerDialogTheme,
                     { _, hour, minute ->
                         // Создаем LocalDateTime из выбранных значений
                         selectedDeadline = LocalDateTime.of(
@@ -140,9 +142,11 @@ class CreateTaskDialog : BottomSheetDialogFragment() {
 
         DatePickerDialog(
             requireContext(),
+            R.style.CustomDatePickerDialogTheme,
             { _, year, month, day ->
                 TimePickerDialog(
                     requireContext(),
+                    R.style.CustomTimePickerDialogTheme,
                     { _, hour, minute ->
                         selectedNotificationTime = Calendar.getInstance().apply {
                             set(Calendar.YEAR, year)
